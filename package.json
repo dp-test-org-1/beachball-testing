@@ -1,0 +1,41 @@
+{
+  "name": "beachball-testing",
+  "scripts": {
+    "checkchange": "beachball check",
+    "change": "beachball change",
+    "release": "beachball publish"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "catalog:react"
+    }
+  },
+  "os": [
+    "win32",
+    "linux",
+    "darwin"
+  ],
+  "engines": {
+    "node": "^18.0.0 || ^20.0.0",
+    "pnpm": "^9"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "beachball": "2.41.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-filename-rules": "^1.2.0",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-jest": "^28.8.3",
+    "eslint-plugin-jest-dom": "^4.0.3",
+    "eslint-plugin-jest-formatting": "3.1.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "rimraf": "4.4.1",
+    "turbo": "^1.7.0"
+  },
+  "packageManager": "pnpm@9.13.2+sha512.88c9c3864450350e65a33587ab801acf946d7c814ed1134da4a924f6df5a2120fd36b46aab68f7cd1d413149112d53c7db3a4136624cfd00ff1846a0c6cef48a"
+}

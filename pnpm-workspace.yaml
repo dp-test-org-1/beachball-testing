@@ -1,0 +1,12 @@
+# pnpm-workspace.yaml
+
+packages:
+ - 'apps/*'
+ - 'packages/*'
+
+catalogs:
+  react:
+    "react": ^19.0.0
+
+  ts:
+    "typescript": ^5
