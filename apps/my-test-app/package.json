@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "beachball-test-adu": "workspace:*",
+    "@adu21/beachball-test-adu": "workspace:*",
     "react": "catalog:react",
     "react-dom": "^19.0.0",
     "next": "15.1.6"

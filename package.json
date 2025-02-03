@@ -1,9 +1,12 @@
 {
   "name": "beachball-testing",
   "scripts": {
+    "build": "rimraf packages\\beachball-test-adu\\dist && turbo run build --no-daemon",
     "checkchange": "beachball check",
     "change": "beachball change",
-    "release": "beachball publish"
+    "release": "beachball publish",
+    "eslint": "cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" eslint ./**/*.{ts,tsx} 1>&2",
+    "eslint-fix": "cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" eslint --fix ./**/*.{ts,tsx} 1>&2"
   },
   "pnpm": {
     "overrides": {

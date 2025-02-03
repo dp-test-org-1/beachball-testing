@@ -1,6 +1,14 @@
-# .gitignore  
+# Output
+/**/build
+/**/lib
+/**/dist/
+/**/coverage
 
-node_modules  
-dist  
-build
-.env
+# Dependency directories
+node_modules/
+
+*.tsbuildinfo
+
+*.watch
+.turbo
+*.env*

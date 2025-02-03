@@ -1,6 +1,6 @@
 function CustomSelect(props: any) {  
     return <div>
-        {props.prop1}
+        prop1: {props.prop1}
     </div>;  
  }
   
