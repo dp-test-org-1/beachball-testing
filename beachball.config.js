@@ -35,5 +35,16 @@ module.exports = {
 
   verbose: true,
   generateChangelog: true,
-  verbose: true
+  verbose: true,
+  hooks: {
+    prepublish: (_, name, version) => {
+      // beachball doesn't support pnpm catalog dependencies, so we do it here
+      console.log(`Replacing catalog and workspace dependencies for ${name}@${version}`);
+      const { spawnSync } = require("child_process");
+      const path = require("path");
+      const scriptPath = path.join(__dirname, "scripts", "replaceCatalogDeps.js");
+      const result = spawnSync("node", [scriptPath, name], { stdio: "inherit" });
+      if (result.error) throw result.error;
+    }
+  }
 };
