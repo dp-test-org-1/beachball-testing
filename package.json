@@ -5,8 +5,8 @@
     "checkchange": "beachball check",
     "change": "beachball change",
     "release": "beachball publish",
-    "eslint": "cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" eslint ./**/*.{ts,tsx} 1>&2",
-    "eslint-fix": "cross-env NODE_OPTIONS=\"--max_old_space_size=8192\" eslint --fix ./**/*.{ts,tsx} 1>&2"
+    "eslint": "eslint",
+    "eslint-fix": "eslint --fix"
   },
   "pnpm": {
     "overrides": {
@@ -24,6 +24,9 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "@itwin/eslint-plugin": "4.0.0-dev.48",
     "beachball": "2.41.0",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "8.5.0",

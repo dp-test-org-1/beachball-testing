@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://itwin-studio.bentley.com/studio-app.schema.json",
+  "title": "StudioAppManifest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "appName": {
+      "type": "string"
+    },
+    "icon": {
+      "description": "Valid Https URL or Data URL to an icon resource that will be displayed in the marketplace. Note that due to a strict CSP web URL sources need to be whitelisted by the Studio team.",
+      "type": "string"
+    },
+    "publisher": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "studioApp": {
+      "description": "iTwin Studio App configuration",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "required": [
+    "studioApp",
+    "name",
+    "version"
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://itwin-studio.bentley.com/app-config-schema.json",
+  "title": "AppConfigJsonSchema",
+  "type": "object",
+  "properties": {
+    "appId": {
+      "description": "The name must match the name of the app in the app's manifest (package.json) file.",
+      "$comment": "TODO: our build process should validate that the appId matches the name in the app's manifest (package.json) file.",
+      "type": "string"
+    },
+    "displayNameEnglish": {
+      "type": "string",
+      "description": "A fallback if displayNameKey for localization is not available."
+    },
+    "displayNameKey": {
+      "type": "string",
+      "description": "A key use to localize the display name, it should include the namespace as well (namespace:key)"
+    },
+    "additionalApps": {
+      "type": "array",
+      "$comment": "We don't want to document or advertise this property yet because it is only used by the ViewSync and is not intended to be used by other App Developers yet. TODO: add version as a subproperty",
+      "description": "@alpha. This property is not yet ready for public use.",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the app to activate. The name must match the name of the app in the app's manifest (package.json) file."
+          }
+        }
+      }
+    },
+    "headless": {
+      "description": "If true, the application will be launched without a user interface.",
+      "type": "boolean"
+    },
+    "disableITwinSelection": {
+      "type": "boolean",
+      "description": "If true, the iTwin selection screen will be skipped."
+    },
+    "authentication": {
+      "type": "object",
+      "description": "OIDC client configuration, used for authentication.",
+      "$comment": "TODO make required",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "description": "OIDC client id. OIDC client type should be 'Desktop'."
+        },
+        "scopes": {
+          "type": "string",
+          "description": "OIDC client scopes. Its recommended to include offline_access at scope (should be last entry in the scope list) for a better user experience."
+        },
+        "authority": {
+          "type": "string",
+          "description": "Authentication authority URI. Defaults to https://ims.bentley.com when not specified."
+        },
+        "redirectUri": {
+          "type": "string",
+          "description": "Sign-in redirect URI. Recommended to have multiple semicolon separated values for better user experience. Note: Use of localhost is NOT recommended. Redirect URI using localhost 'http://localhost:3{GPR_ID}/signin-callback/' works in the same way as loopback address 'https://127.0.0.1:3{GPR_ID}/signin-callback/'. Security guidelines for Loopback Interface Redirection 'https://dev.azure.com/bentleycs/AppSec/_wiki/wikis/AppSec.wiki/37738/OIDC-Redirect-Guidelines-for-Native-Apps?anchor=2.-security-guidelines-for-loopback-interface-redirection%3A'"
+        },
+        "qa": {
+          "type": "object",
+          "description": "QA OIDC client configuration, used for authentication.",
+          "properties": {
+            "clientId": {
+              "type": "string",
+              "description": "OIDC client id. OIDC client type should be 'Desktop'."
+            },
+            "scopes": {
+              "type": "string",
+              "description": "OIDC client scopes. Its recommended to include offline_access at scope (should be last entry in the scope list) for a better user experience."
+            },
+            "authority": {
+              "type": "string",
+              "description": "Authentication authority URI. Defaults to https://qa-ims.bentley.com when not specified."
+            },
+            "redirectUri": {
+              "type": "string",
+              "description": "Sign-in redirect URI. Recommended to have multiple semicolon separated values for better user experience. Note: Use of localhost is NOT recommended. Redirect URI using localhost 'http://localhost:3{GPR_ID}/signin-callback/' works in the same way as loopback address 'https://127.0.0.1:3{GPR_ID}/signin-callback/'. Security guidelines for Loopback Interface Redirection 'https://dev.azure.com/bentleycs/AppSec/_wiki/wikis/AppSec.wiki/37738/OIDC-Redirect-Guidelines-for-Native-Apps?anchor=2.-security-guidelines-for-loopback-interface-redirection%3A'"
+            }
+          },
+          "required": ["clientId"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["clientId", "scopes", "redirectUri", "qa"],
+      "additionalProperties": false
+    },
+    "gprId": {
+      "type": "string",
+      "description": "Product id for additional usage tracking.",
+      "$comment": "FIXME Use this id for tracking, when given"
+    },
+    "pendo": {
+      "type": "object",
+      "description": "Pendo integration config. If set, Pendo will be initialized by Studio",
+      "properties": {
+        "subscriptionId": {
+          "type": "string",
+          "description": "Used to setup Pendo integration. Can be found in the URL when logged into Pendo, https://app.pendo.io/s/{subscriptionId}/"
+        },
+        "applicationGuid": {
+          "type": "string",
+          "description": "Used to setup Pendo integration. Can be found in your app.pendo.io > settings > subscription settings > applications > {application name} > API Key"
+        }
+      },
+      "required": ["subscriptionId", "applicationGuid"],
+      "additionalProperties": false
+    },
+    "disableAutoUpdate": {
+      "type": "boolean",
+      "description": "@alpha If true, iTwin Studio and apps will not auto-update."
+    },
+    "requestedPermissions": {
+      "description": "@alpha. Additional electron permissions https://www.electronjs.org/docs/latest/api/session#sessetpermissionrequesthandlerhandler that are needed by the app. Contact the Studio team if additional permissions are needed",
+      "type": "object",
+      "properties": {
+        "audio": {
+          "type": "boolean",
+          "description": "App requires microphone access."
+        }
+      },
+      "additionalProperties": false
+    },
+    "icons": {
+      "type": "array",
+      "description": "Configure a desktop shortcut to be added on install",
+      "items": {
+        "type": "object",
+        "required": ["src", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "Path to the icon file relative to app.config.json."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["image/icns", "image/x-icon"],
+            "description": "Mime type of the icon. Either image/x-icon for Windows and Linux or image/icns for MacOS."
+          }
+        }
+      }
+    }
+  },
+  "required": ["appId"],
+  "additionalProperties": false
+}

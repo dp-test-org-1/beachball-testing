@@ -1,0 +1,27 @@
+{
+  "cSpell.workspaceRootPath": "",
+  "json.schemas": [
+    {
+      "fileMatch": ["/package.json"],
+      "url": "./app-manifest-schema.json"
+    },
+    {
+      "fileMatch": ["*.config.json"],
+      "url": "./app-config-schema.json"
+    }
+  ],
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  "eslint.experimental.useFlatConfig": true,
+  "prettier.configPath": "./prettier-config.js",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.preferences.autoImportFileExcludePatterns": ["**/beachball-test-adu/dist/**"]
+}

@@ -1,0 +1,30 @@
+{
+  "ignoreFiles": [
+    "**/node_modules/**/*.scss"
+  ],
+  "plugins": [
+    "stylelint-prettier"
+  ],
+  "extends": [
+    "stylelint-config-prettier",
+    "stylelint-config-css-modules"
+  ],
+  "rules": {
+    "at-rule-no-vendor-prefix": true,
+    "color-hex-length": null,
+    "declaration-block-trailing-semicolon": "always",
+    "declaration-colon-space-before": "never",
+    "indentation": 2,
+    "max-nesting-depth": 6,
+    "media-feature-name-no-vendor-prefix": true,
+    "number-leading-zero": "always",
+    "selector-class-pattern": null,
+    "selector-combinator-space-after": "always",
+    "selector-max-compound-selectors": 5,
+    "selector-max-id": null,
+    "selector-no-qualifying-type": null,
+    "shorthand-property-no-redundant-values": null,
+    "string-quotes": "double",
+    "color-named": ["never", { "severity": "warning" }]
+  }
+}
