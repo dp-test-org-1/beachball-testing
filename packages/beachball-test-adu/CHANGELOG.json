@@ -2,6 +2,29 @@
   "name": "@adu21/beachball-test-adu",
   "entries": [
     {
+      "date": "Tue, 04 Feb 2025 08:16:56 GMT",
+      "version": "0.1.1",
+      "tag": "@adu21/beachball-test-adu_v0.1.1",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu",
+            "commit": "7f716ddcf35a2670a955a29f8f4bda5c459fa01c",
+            "comment": "minor changes"
+          }
+        ],
+        "none": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu",
+            "commit": "not available",
+            "comment": "Replace catalog deps"
+          }
+        ]
+      }
+    },
+    {
       "date": "Tue, 04 Feb 2025 07:45:34 GMT",
       "version": "0.1.0",
       "tag": "@adu21/beachball-test-adu_v0.1.0",
