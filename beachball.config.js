@@ -8,7 +8,7 @@ const { execSync } = require("child_process");
 const currentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
 
 module.exports = {
-  branch: currentBranch,
+  branch: `origin/${currentBranch}`,
   bumpDeps: false,
   access: "public",
   tag: "latest",
