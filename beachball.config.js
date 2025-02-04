@@ -3,12 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-const { execSync } = require("child_process");
-
-const currentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
-
 module.exports = {
-  branch: `origin/${currentBranch}`,
   bumpDeps: false,
   access: "public",
   tag: "latest",
