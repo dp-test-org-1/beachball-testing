@@ -1,0 +1,20 @@
+{
+  "name": "@adu21/beachball-test-adu",
+  "entries": [
+    {
+      "date": "Tue, 04 Feb 2025 07:05:58 GMT",
+      "version": "0.1.0",
+      "tag": "@adu21/beachball-test-adu_v0.1.0",
+      "comments": {
+        "minor": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu",
+            "commit": "56f59518ee29e455f45a358d65ef5cfb7b335317",
+            "comment": "eslint and vs configuration"
+          }
+        ]
+      }
+    }
+  ]
+}
