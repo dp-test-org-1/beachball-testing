@@ -1,0 +1,44 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+parameters:
+  - name: dev
+    type: boolean
+    default: false
+    displayName: "Publish pre-release versions"
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  REPO_URL: github.com/dp-test-org-1/beachball-testing
+  BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+- script: npm install -g pnpm@^9.0.0
+  displayName: Install pnpm
+
+- script: pnpm install
+  displayName: Install dependencies
+
+- script: pnpm build
+  displayName: Build
+  
+- script: |
+    git config --global user.email "adityakavale21@gmail.com"
+    git config --global user.name "Aditya Kavale"
+    git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
+    pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
+  displayName: "Publish packages"
+  env:
+    ${{ if eq(parameters.dev, true) }}:
+      beachballOptions: "--config beachball.config.dev.js"
