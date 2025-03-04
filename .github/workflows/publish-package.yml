@@ -1,10 +1,7 @@
 name: Publish Package
 
 # Run this workflow every time a commit is pushed to main.
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   build:
@@ -17,7 +14,8 @@ jobs:
           azure-devops-project-url: https://dev.azure.com/adityakavale/adityakavale
           azure-pipeline-name: "dp-test-org-1.beachball-testing"
           azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
-
+          parameters: |
+            branch: ${{ github.ref }}
 # jobs:
 #   trigger-pipeline:
 #     runs-on: ubuntu-latest
