@@ -1,6 +1,6 @@
 name: Publish Package
 
-# Run this workflow every time a commit is pushed to release/itwinjs-4.10.6.
+# Run this workflow every time a commit is pushed to main.
 on:
   push:
     branches:
