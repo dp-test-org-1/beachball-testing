@@ -1,0 +1,19 @@
+name: Publish Package
+
+# Run this workflow every time a commit is pushed to release/itwinjs-4.10.6.
+on:
+  push:
+    branches:
+      - release/itwinjs-4.10.6
+
+jobs:
+  build:
+    name: Call Azure Pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Pipelines Action
+        uses: Azure/pipelines@v1
+        with:
+          azure-devops-project-url: https://dev.azure.com/adityakavale/adityakavale
+          azure-pipeline-name: "dp-test-org-1.beachball-testing"
+          azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
