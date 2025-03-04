@@ -1,7 +1,8 @@
 name: Publish Package
 
 # Run this workflow every time a commit is pushed to main.
-on: [push]
+on:
+  workflow_dispatch:
 
 # jobs:
 #   build:
