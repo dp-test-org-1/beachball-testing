@@ -3,6 +3,12 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+parameters:
+  - name: dev
+    type: boolean
+    default: false
+    displayName: "Publish pre-release versions"
+
 trigger: none
 
 pool:
