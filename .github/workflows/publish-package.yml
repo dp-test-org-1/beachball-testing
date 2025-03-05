@@ -27,3 +27,5 @@ jobs:
           azure-devops-project-url: "https://dev.azure.com/adityakavale/adityakavale"
           azure-pipeline-name: "dp-test-org-1.beachball-testing"
           azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
+          parameters: |
+            dev: true
