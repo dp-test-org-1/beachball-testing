@@ -11,6 +11,9 @@ jobs:
   trigger-pipeline:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Publish to Azure DevOps
         run: |
           az devops configure --defaults organization=https://dev.azure.com/adityakavale project=adityakavale
