@@ -26,6 +26,8 @@ jobs:
       - name: Run Azure Pipeline
         uses: azure/pipelines@v1
         with:
-          azure-pipelines-file: "azure-pipelines.yml"
+          azure-devops-project-url: "https://dev.azure.com/adityakavale/adityakavale"
+          azure-pipeline-name: "dp-test-org-1.beachball-testing"
+          azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
           parameters: |
             environment: 'prod'
