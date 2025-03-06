@@ -24,10 +24,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run Azure Pipeline
-        uses: azure/pipelines@v1
+        uses: azure/pipelines@v1.2
         with:
           azure-devops-project-url: "https://dev.azure.com/adityakavale/adityakavale"
           azure-pipeline-name: "dp-test-org-1.beachball-testing"
           azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
-          azure-pipeline-variables: |
-            IS_DEV: true
+          azure-pipeline-variables: '{"IS_DEV": true}'
