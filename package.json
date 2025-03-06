@@ -6,7 +6,7 @@
     "url": "https://github.com/dp-test-org-1/beachball-testing.git"
   },
   "scripts": {
-    "build": "rimraf packages\\beachball-test-adu\\dist && turbo run build --no-daemon",
+    "build": "turbo run build --no-daemon",
     "checkchange": "beachball check",
     "change": "beachball change",
     "bump": "beachball bump",

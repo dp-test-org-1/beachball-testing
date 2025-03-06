@@ -6,8 +6,12 @@
 parameters:
   - name: dev
     type: boolean
-    default: true
+    default: false
     displayName: "Publish pre-release versions"
+
+variables:
+  - name: IS_DEV
+    value: false
 
 trigger:
   - main
@@ -23,5 +27,8 @@ steps:
 
   - script: |
       npm install
-      npm run build
-    displayName: "npm install and build"
+    displayName: "npm install"
+
+  - script: |
+      npm build
+    displayName: "npm build"
