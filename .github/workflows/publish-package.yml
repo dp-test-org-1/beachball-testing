@@ -7,9 +7,24 @@ jobs:
   trigger-pipeline:
     runs-on: ubuntu-latest
     steps:
-      - uses: Azure/pipelines@v1.2
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          azure-devops-project-url: "https://dev.azure.com/adityakavale/adityakavale"
-          azure-pipeline-name: "dp-test-org-1.beachball-testing"
-          azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
-          azure-pipeline-variables: '{"IS_DEV": "true"}'
+          node-version: "14"
+
+      - name: Publish to Azure DevOps
+        run: |
+          az devops configure --defaults organization=https://dev.azure.com/adityakavale project=adityakavale
+          az pipelines run --name "dp-test-org-1.beachball-testing" --parameters dev=true
+        env:
+          AZURE_DEVOPS_EXT_PAT: ${{ secrets.PAT_EXTENSION_SERVICE }}
+
+      # - uses: Azure/pipelines@v1.2
+      #   with:
+      #     azure-devops-project-url: "https://dev.azure.com/adityakavale/adityakavale"
+      #     azure-pipeline-name: "dp-test-org-1.beachball-testing"
+      #     azure-devops-token: ${{ secrets.PAT_EXTENSION_SERVICE }}
+      #     azure-pipeline-variables: '{"IS_DEV": "true"}'
