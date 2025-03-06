@@ -6,7 +6,7 @@
 parameters:
   - name: dev
     type: boolean
-    default: $(IS_DEV)
+    default: false
     displayName: "Publish pre-release versions"
 
 variables:
