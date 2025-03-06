@@ -4,9 +4,9 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 parameters:
-  - name: environment
-    type: string
-    default: "dev"
+  - name: dev
+    type: boolean
+    default: false
     displayName: "Publish pre-release versions"
 
 variables:
@@ -35,5 +35,5 @@ steps:
   #   displayName: Build
 
   - script: |
-      echo ${{ parameters.environment }}
-    displayName: "Display environment"
+      echo $(IS_DEV)
+    displayName: "Display IS_DEV"
