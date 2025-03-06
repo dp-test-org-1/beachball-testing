@@ -38,3 +38,6 @@ steps:
       echo $(IS_DEV)
       echo ${{ parameters.dev }}
     displayName: "Display IS_DEV"
+    env:
+      ${{ if eq(parameters.dev, true) }}:
+        beachballOptions: "--config beachball.config.dev.js"
