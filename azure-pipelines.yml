@@ -25,13 +25,14 @@ steps:
       versionSpec: "20.x"
     displayName: "Install Node.js"
 
-  - script: |
-      npm install
-    displayName: "npm install"
+  - script: npm install -g pnpm@^9.0.0
+    displayName: Install pnpm
 
-  - script: |
-      npm build
-    displayName: "npm build"
+  - script: pnpm install
+    displayName: Install dependencies
+
+  - script: pnpm build
+    displayName: Build
 
   - script: |
       echo $(IS_DEV)
