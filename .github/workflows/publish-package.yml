@@ -11,13 +11,10 @@ jobs:
   trigger-pipeline:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Publish to Azure DevOps
         run: |
           az devops configure --defaults organization=https://dev.azure.com/adityakavale project=adityakavale
-          az pipelines run --name "dp-test-org-1.beachball-testing" --parameters dev=${{ github.event.inputs.environment }}
+          az pipelines run --name "dp-test-org-1.beachball-testing" --branch ${{ github.ref }} --parameters dev=${{ github.event.inputs.environment }}
         env:
           AZURE_DEVOPS_EXT_PAT: ${{ secrets.PAT_EXTENSION_SERVICE }}
 
