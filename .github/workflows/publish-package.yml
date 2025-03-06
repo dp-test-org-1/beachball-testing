@@ -4,13 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: choice
-        description: "Environment to deploy to"
-        required: true
-        default: "dev"
-        options:
-          - "dev"
-          - "prod"
+        type: boolean
+        description: Deploy to dev environment
 
 jobs:
   trigger-pipeline:
