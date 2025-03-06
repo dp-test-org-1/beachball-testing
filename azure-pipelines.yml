@@ -26,7 +26,6 @@ steps:
     inputs:
       versionSpec: "20.x"
     displayName: "Install Node.js"
-
   - script: echo $(IS_DEV)
     displayName: "Display Variable Value"
   - script: echo ${{ parameters.dev }}
