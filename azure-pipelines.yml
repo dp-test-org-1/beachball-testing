@@ -35,8 +35,7 @@ steps:
     displayName: Build
 
   - script: |
-      echo $(IS_DEV)
-      echo ${{ parameters.dev }}
+      echo ${{ parameters.dev }} $beachballOptions
     displayName: "Display IS_DEV"
     env:
       ${{ if eq(parameters.dev, true) }}:
