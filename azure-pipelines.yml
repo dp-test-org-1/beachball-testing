@@ -6,17 +6,11 @@
 parameters:
   - name: dev
     type: boolean
-    default: $(IS_DEV)
+    default: true
     displayName: "Publish pre-release versions"
-
-variables:
-  IS_DEV: false
 
 trigger:
   - main
-
-variables:
-  IS_DEV: false
 
 pool:
   vmImage: ubuntu-latest
@@ -26,13 +20,8 @@ steps:
     inputs:
       versionSpec: "20.x"
     displayName: "Install Node.js"
-  - script: echo $(IS_DEV)
-    displayName: "Display Variable Value"
-  - script: echo ${{ parameters.dev }}
-    displayName: "Display Parameter Value"
+
   - script: |
-      echo "Setting parameter value using variable"
-      echo ${{ parameters.dev }} = $(IS_DEV)
-    displayName: "Set Parameter Value Using Variable"
-  - script: echo ${{ parameters.dev }}
-    displayName: "Display Parameter Value"
+      npm install
+      npm run build
+    displayName: "npm install and build"
