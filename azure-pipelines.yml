@@ -32,3 +32,7 @@ steps:
   - script: |
       npm build
     displayName: "npm build"
+
+  - script: |
+      echo $(IS_DEV)
+    displayName: "Display IS_DEV"
