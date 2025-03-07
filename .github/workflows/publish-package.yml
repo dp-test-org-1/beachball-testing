@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check if user is authorized
         run: |
-          if [[ "${{ secrets.DEVOPS_USERS }}"" != *"${{ github.actor }}"* ]]; then
+          if [[ "${{ secrets.DEVOPS_USERS }}" == *"${{ github.actor }}"* ]]; then
             echo "Error: Unauthorized user. Exiting."
             exit 1
           fi
