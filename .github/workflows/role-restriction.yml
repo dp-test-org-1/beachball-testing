@@ -8,4 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Role Restriction Test
+        if: github.actor == 'Adu2120'
         run: echo ${{ github.actor }}
