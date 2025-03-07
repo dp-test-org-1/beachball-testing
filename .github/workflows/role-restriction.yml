@@ -12,8 +12,6 @@ jobs:
           if [[ "$GITHUB_ACTOR" != "Adu2120" ]]; then
             echo "Error: Unauthorized user. Exiting."
             exit 1
-          fi
-          echo "User is authorized. Proceeding with workflow."
 
       - name: Run tests
         run: echo "Running tests..."
