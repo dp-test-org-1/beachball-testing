@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish to Azure DevOps
-        if: github.actor == 'Owner'
         run: |
           az devops configure --defaults organization=https://dev.azure.com/adityakavale project=adityakavale
           az pipelines run --name "dp-test-org-1.beachball-testing" --branch ${{ github.ref }} --parameters dev=${{ github.event.inputs.environment }}
