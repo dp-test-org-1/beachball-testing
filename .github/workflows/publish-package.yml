@@ -14,6 +14,8 @@ jobs:
       - name: Check if user is authorized
         run: |
           if [[ "${{ secrets.DEVOPS_USERS }}" == *"${{ github.actor }}"* ]]; then
+            echo "Authorized user."
+          else
             echo "Error: Unauthorized user. Exiting."
             exit 1
           fi
