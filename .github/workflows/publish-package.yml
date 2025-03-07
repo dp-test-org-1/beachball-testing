@@ -16,6 +16,7 @@ jobs:
           if [[ "$GITHUB_ACTOR" != "Adu2120" ]]; then
             echo "Error: Unauthorized user. Exiting."
             exit 1
+          fi
 
       - name: Publish to Azure DevOps
         run: |
