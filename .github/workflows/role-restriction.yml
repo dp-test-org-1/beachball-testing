@@ -4,9 +4,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  trigger-pipeline:
+  check-user:
     runs-on: ubuntu-latest
     steps:
-      - name: Role Restriction Test
-        if: github.actor == 'Adu2120'
-        run: echo ${{ github.actor }}
+      - name: Check if user is authorized
+        run: |
+          if [[ "$GITHUB_ACTOR" != "Adu2120" ]]; then
+            echo "Error: Unauthorized user. Exiting."
+            exit 1
+          fi
+          echo "User is authorized. Proceeding with workflow.
+
+      - name: Run tests
+        run: echo "Running tests..."
