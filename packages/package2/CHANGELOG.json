@@ -2,6 +2,36 @@
   "name": "@adu21/beachball-test-adu-2",
   "entries": [
     {
+      "date": "Wed, 12 Mar 2025 08:28:16 GMT",
+      "version": "0.0.4",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.4",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "62e144fa8aebb4e9bb12d63279ab91fa59079fe4",
+            "comment": "Refactor prop1 to prop4 in CustomComponent"
+          }
+        ]
+      }
+    },
+    {
+      "date": "Wed, 12 Mar 2025 08:19:10 GMT",
+      "version": "0.0.3",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "ebd547a8230cdfbeff319aa5455976ad74b96482",
+            "comment": "Refactor prop1 to prop2 in CustomComponent"
+          }
+        ]
+      }
+    },
+    {
       "date": "Wed, 12 Mar 2025 08:11:28 GMT",
       "version": "0.0.2",
       "tag": "@adu21/beachball-test-adu-2_v0.0.2",
