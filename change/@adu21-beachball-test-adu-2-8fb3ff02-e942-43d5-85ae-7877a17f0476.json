@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "Refactor prop1 to prop6 in CustomComponent",
+  "packageName": "@adu21/beachball-test-adu-2",
+  "email": "Aditya.Kavale@bentley.com",
+  "dependentChangeType": "patch"
+}
