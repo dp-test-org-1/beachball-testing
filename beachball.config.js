@@ -7,8 +7,7 @@ module.exports = {
   bumpDeps: false,
   access: "public",
   tag: "latest",
-  scope: ["packages/beachball-test-adu"],
-  package: "@adu21/beachball-test-adu",
+  scope: ["packages/beachball-test-adu", "packages/package2"],
   registry: "http://localhost:4873/",
   ignorePatterns: [
     "eslint.config.js",

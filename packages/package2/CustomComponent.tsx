@@ -3,14 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-const base = require("./beachball.config.js");
-
-/** @type {import("beachball").BeachballConfig } */
-module.exports = {
-  ...base,
-  scope: ["packages/beachball-test-adu", "packages/package2"],
-  changehint: "Run 'pnpm change:dev' to generate a change file",
-  tag: "nightly",
-  prereleasePrefix: "dev",
-  changelog: false
+const CustomComponent = ({ prop1 = "Hello" }) => {
+  return (
+    <div>
+      <p>prop1: {prop1}</p>
+    </div>
+  );
 };
+
+export default CustomComponent;
