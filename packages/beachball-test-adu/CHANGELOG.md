@@ -1,8 +1,17 @@
 # Change Log - @adu21/beachball-test-adu
 
-This log was last generated on Wed, 12 Mar 2025 08:11:28 GMT and should not be manually modified.
+This log was last generated on Wed, 12 Mar 2025 08:24:45 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.3.4
+
+Wed, 12 Mar 2025 08:24:45 GMT
+
+### Patches
+
+- Refactor prop1 to prop2 in CustomSelect component ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/adeb052ced9552cfa4950202c868b348c1cbbc71))
+- Refactor prop1 to prop3 in CustomComponent ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/6f0cfbfd304e5832644e31d39aa78ace68f34558))
 
 ## 0.3.3
 

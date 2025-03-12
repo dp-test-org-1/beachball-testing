@@ -1,7 +1,0 @@
-{
-  "type": "patch",
-  "comment": "Refactor prop1 to prop2 in CustomSelect component",
-  "packageName": "@adu21/beachball-test-adu",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}
