@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu
 
-This log was last generated on Wed, 12 Mar 2025 08:24:45 GMT and should not be manually modified.
+This log was last generated on Wed, 12 Mar 2025 09:43:37 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.3.5
+
+Wed, 12 Mar 2025 09:43:37 GMT
+
+### Patches
+
+- Refactor prop1 to prop6 in CustomComponent ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/86de283af1cf32123d186e5df2af8ed0ebff3936))
 
 ## 0.3.4
 
