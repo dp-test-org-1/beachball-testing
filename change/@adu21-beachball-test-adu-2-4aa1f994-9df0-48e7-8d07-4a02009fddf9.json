@@ -1,7 +1,0 @@
-{
-  "type": "patch",
-  "comment": "Refactor beachball configuration to include package2 in the scope",
-  "packageName": "@adu21/beachball-test-adu-2",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}

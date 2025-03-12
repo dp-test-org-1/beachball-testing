@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu
 
-This log was last generated on Tue, 04 Feb 2025 08:16:56 GMT and should not be manually modified.
+This log was last generated on Wed, 12 Mar 2025 08:11:28 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.3.3
+
+Wed, 12 Mar 2025 08:11:28 GMT
+
+### Patches
+
+- Added workflow for publishing pipeline ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/3a7152b19d9d204a527fdcf560d9bf406749fa1d))
 
 ## 0.1.1
 
