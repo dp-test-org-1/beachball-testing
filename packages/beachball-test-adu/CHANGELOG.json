@@ -2,6 +2,21 @@
   "name": "@adu21/beachball-test-adu",
   "entries": [
     {
+      "date": "Wed, 12 Mar 2025 08:11:28 GMT",
+      "version": "0.3.3",
+      "tag": "@adu21/beachball-test-adu_v0.3.3",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu",
+            "commit": "3a7152b19d9d204a527fdcf560d9bf406749fa1d",
+            "comment": "Added workflow for publishing pipeline"
+          }
+        ]
+      }
+    },
+    {
       "date": "Tue, 04 Feb 2025 08:16:56 GMT",
       "version": "0.1.1",
       "tag": "@adu21/beachball-test-adu_v0.1.1",

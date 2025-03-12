@@ -1,0 +1,20 @@
+{
+  "name": "@adu21/beachball-test-adu-2",
+  "entries": [
+    {
+      "date": "Wed, 12 Mar 2025 08:11:28 GMT",
+      "version": "0.0.2",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.2",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "a4cccd9cd366b6134012b14568632a5c1bd66d3b",
+            "comment": "Refactor beachball configuration to include package2 in the scope"
+          }
+        ]
+      }
+    }
+  ]
+}
