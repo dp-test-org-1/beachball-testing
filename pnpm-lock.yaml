@@ -74,6 +74,9 @@ importers:
       turbo:
         specifier: ^1.7.0
         version: 1.13.4
+      workspace-tools:
+        specifier: ^0.34.6
+        version: 0.34.6
 
   apps/my-test-app:
     dependencies:
@@ -1465,7 +1468,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   jju@1.4.0:
-    resolution: {integrity: sha1-o6vicYryQaKykE+EpiWXDzia4yo=}
+    resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=}
@@ -2223,8 +2226,11 @@ packages:
     resolution: {integrity: sha1-0sRcbdT7zmIaZvE2y+Mor9BBCzQ=}
     engines: {node: '>=0.10.0'}
 
+  workspace-tools@0.34.6:
+    resolution: {integrity: sha512-6KDZW4K/t+CM3RGp56KN11Jp75NwNsEgTGCIxnvLbCY14j/Xa67vBCdWipFkB7t72gJJb61qDoCL9CHVNcI6Qg==}
+
   workspace-tools@0.36.4:
-    resolution: {integrity: sha1-V1BMaHVpeFFIxbfvFHDa3JvpcMU=}
+    resolution: {integrity: sha512-v0UFVvw9BjHtRu2Dau5PEJKkuG8u4jPlpXZQWjSz9XgbSutpPURqtO2P0hp3cVmQVATh8lkMFCewFgJuDnyC/w==}
 
   wrappy@1.0.2:
     resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
@@ -4863,6 +4869,15 @@ snapshots:
       winston-transport: 4.9.0
 
   word-wrap@1.2.5: {}
+
+  workspace-tools@0.34.6:
+    dependencies:
+      '@yarnpkg/lockfile': 1.1.0
+      git-url-parse: 13.1.1
+      globby: 11.1.0
+      jju: 1.4.0
+      js-yaml: 4.1.0
+      micromatch: 4.0.8
 
   workspace-tools@0.36.4:
     dependencies:
