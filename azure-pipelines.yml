@@ -10,7 +10,7 @@ parameters:
     displayName: "Publish pre-release versions"
 
 variables:
-  REPO_URL: github.com/iTwin/drawing-production
+  REPO_URL: github.com/dp-test-org-1/beachball-testing
   BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
   - name: IS_DEV
     value: false
