@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu
 
-<!-- This log was last generated on Tue, 18 Mar 2025 18:01:29 GMT and should not be manually modified. -->
+<!-- This log was last generated on Tue, 18 Mar 2025 18:05:04 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 0.3.5-dev.3
+
+Tue, 18 Mar 2025 18:05:04 GMT
+
+### Changes
+
+- Update package.json and Select.tsx (Aditya.Kavale@bentley.com)
 
 ## 0.3.5-dev.2
 
