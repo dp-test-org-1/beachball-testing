@@ -44,7 +44,6 @@ async function main() {
   }
   const pkgJsonPath = pkgJson.packageJsonPath;
   delete pkgJson.packageJsonPath; // we don't want to publish this
-
   await fs.promises.writeFile(pkgJsonPath, JSON.stringify(pkgJson, undefined, "  "));
 }
 
