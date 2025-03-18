@@ -1,0 +1,7 @@
+{
+  "type": "prerelease",
+  "comment": "Update package.json and Select.tsx",
+  "packageName": "@adu21/beachball-test-adu",
+  "email": "Aditya.Kavale@bentley.com",
+  "dependentChangeType": "patch"
+}
