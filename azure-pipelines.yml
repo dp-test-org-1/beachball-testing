@@ -12,8 +12,6 @@ parameters:
 variables:
   REPO_URL: github.com/dp-test-org-1/beachball-testing
   BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
-  - name: IS_DEV
-    value: false
 
 trigger:
   - main
@@ -41,7 +39,7 @@ steps:
       git config --global user.name "Aditya Kavale"
       git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
       pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
-    displayName: "Display IS_DEV"
+    displayName: "Publish package"
     env:
       ${{ if eq(parameters.dev, true) }}:
         beachballOptions: "--config beachball.config.dev.js"
