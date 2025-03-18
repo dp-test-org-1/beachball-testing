@@ -37,8 +37,8 @@ steps:
     displayName: Build
 
   - script: |
-      git config --global user.email imodeljs-admin@users.noreply.github.com
-      git config --global user.name imodeljs-admin
+      git config --global user.email adityakavale21@gmail.com
+      git config --global user.name "Aditya Kavale"
       git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
       pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
     displayName: "Display IS_DEV"
