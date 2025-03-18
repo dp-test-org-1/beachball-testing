@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu
 
-<!-- This log was last generated on Tue, 18 Mar 2025 18:07:44 GMT and should not be manually modified. -->
+<!-- This log was last generated on Tue, 18 Mar 2025 18:26:51 GMT and should not be manually modified. -->
 
 <!-- Start content -->
+
+## 0.3.5-dev.5
+
+Tue, 18 Mar 2025 18:26:51 GMT
+
+### Changes
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
 
 ## 0.3.5-dev.4
 
