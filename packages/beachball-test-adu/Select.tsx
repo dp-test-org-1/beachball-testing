@@ -3,10 +3,10 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-const CustomSelect = ({ prop1: prop3 = "Hello" }) => {
+const CustomSelect = ({ prop1: prop4 = "Hello" }) => {
   return (
     <div>
-      <p>prop3: {prop3}</p>
+      <p>prop3: {prop4}</p>
     </div>
   );
 };
