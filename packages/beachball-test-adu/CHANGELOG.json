@@ -2,6 +2,21 @@
   "name": "@adu21/beachball-test-adu",
   "entries": [
     {
+      "date": "Tue, 18 Mar 2025 18:07:44 GMT",
+      "version": "0.3.5-dev.4",
+      "tag": "@adu21/beachball-test-adu_v0.3.5-dev.4",
+      "comments": {
+        "prerelease": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu",
+            "commit": "eb0e723c40625d48026f62d889e9a79cd100ffb0",
+            "comment": "Refactor prop name in CustomSelect component"
+          }
+        ]
+      }
+    },
+    {
       "date": "Tue, 18 Mar 2025 18:05:04 GMT",
       "version": "0.3.5-dev.3",
       "tag": "@adu21/beachball-test-adu_v0.3.5-dev.3",
