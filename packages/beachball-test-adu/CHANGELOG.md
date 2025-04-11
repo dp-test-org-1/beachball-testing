@@ -4,6 +4,58 @@ This log was last generated on Wed, 12 Mar 2025 09:43:37 GMT and should not be m
 
 <!-- Start content -->
 
+## 0.3.5-dev.5
+
+Tue, 18 Mar 2025 18:26:51 GMT
+
+### Changes
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
+
+## 0.3.5-dev.4
+
+Tue, 18 Mar 2025 18:07:44 GMT
+
+### Changes
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
+
+## 0.3.5-dev.3
+
+Tue, 18 Mar 2025 18:05:04 GMT
+
+### Changes
+
+- Update package.json and Select.tsx (Aditya.Kavale@bentley.com)
+
+## 0.3.5-dev.2
+
+Tue, 18 Mar 2025 18:01:29 GMT
+
+### Changes
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
+
+## 0.3.5-dev.1
+
+Tue, 18 Mar 2025 17:58:12 GMT
+
+### Changes
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
+
+## 0.3.5-dev.0
+
+Tue, 18 Mar 2025 17:52:55 GMT
+
+### Minor changes
+
+- Demo (Aditya.Kavale@bentley.com)
+
+### Patches
+
+- Refactor prop name in CustomSelect component (Aditya.Kavale@bentley.com)
+
 ## 0.3.5
 
 Wed, 12 Mar 2025 09:43:37 GMT
