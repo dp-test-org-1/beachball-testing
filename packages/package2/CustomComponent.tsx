@@ -3,10 +3,10 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-const CustomComponent = ({ prop1: prop4 = "Hello" }) => {
+const CustomComponent = ({ prop1: prop6 = "Hello" }) => {
   return (
     <div>
-      <p>prop4: {prop4}</p>
+      <p>prop6: {prop6}</p>
     </div>
   );
 };
