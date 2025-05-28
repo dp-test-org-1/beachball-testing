@@ -1,0 +1,14 @@
+name: Automatic trigger
+on:
+  schedule:name: Automatic trigger
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # This will run every 5 minutes
+
+jobs:
+  trigger-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Role Restriction Test
+        if: github.actor == 'Adu2120'
+        run: echo "testing trigger for every 5 minutes"  # This will run every 5 minutes
