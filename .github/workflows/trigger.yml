@@ -1,7 +1,5 @@
 name: Automatic trigger
 on:
-  schedule:name: Automatic trigger
-on:
   schedule:
     - cron: '*/5 * * * *'  # This will run every 5 minutes
 
