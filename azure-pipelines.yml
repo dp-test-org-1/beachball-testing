@@ -39,7 +39,7 @@ stages:
           - script: pnpm build
             displayName: Build
 
-  - stage: "QA Publish"
+  - stage: "QAPublish"
     jobs:
       - deployment: "DeployToQA"
         environment: "test-QA"
@@ -57,7 +57,7 @@ stages:
                   env:
                     ${{ if eq(parameters.dev, true) }}:
                       beachballOptions: "--config beachball.config.dev.js"
-  - stage: "Prod Publish"
+  - stage: "ProdPublish"
     jobs:
       - deployment: "DeployToPROD"
         environment: "test-QA"
