@@ -19,27 +19,59 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: "20.x"
-    displayName: "Install Node.js"
+stages:
+  - stage: "PublishTemplates"
+    displayName: "PublishTemplates"
+    jobs:
+      - job: "PublishTemplates"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.x"
+            displayName: "Install Node.js"
 
-  - script: npm install -g pnpm@^9.0.0
-    displayName: Install pnpm
+          - script: npm install -g pnpm@^9.0.0
+            displayName: Install pnpm
 
-  - script: pnpm install
-    displayName: Install dependencies
+          - script: pnpm install
+            displayName: Install dependencies
 
-  - script: pnpm build
-    displayName: Build
+          - script: pnpm build
+            displayName: Build
 
-  - script: |
-      git config --global user.email adityakavale21@gmail.com
-      git config --global user.name "Aditya Kavale"
-      git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
-      pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
-    displayName: "Publish package"
-    env:
-      ${{ if eq(parameters.dev, true) }}:
-        beachballOptions: "--config beachball.config.dev.js"
+  - stage: "QA Publish"
+    jobs:
+      - deployment: "DeployToQA"
+        environment: "test-QA"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: |
+                    git config --global user.email adityakavale21@gmail.com
+                    git config --global user.name "Aditya Kavale"
+                    git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
+                    echo "Deploying to QA environment"
+                  # pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
+                  displayName: "Publish package"
+                  env:
+                    ${{ if eq(parameters.dev, true) }}:
+                      beachballOptions: "--config beachball.config.dev.js"
+  - stage: "Prod Publish"
+    jobs:
+      - deployment: "DeployToPROD"
+        environment: "test-QA"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: |
+                    git config --global user.email adityakavale21@gmail.com
+                    git config --global user.name "Aditya Kavale"
+                    git remote set-url origin "https://$(GITHUB_PAT)@$(REPO_URL)"
+                    echo "Deploying to PROD environment"
+                  # pnpm run release --branch "origin/$(BRANCH_NAME)" --message "Version bump [automated]" $beachballOptions
+                  displayName: "Publish package"
+                  env:
+                    ${{ if eq(parameters.dev, true) }}:
+                      beachballOptions: "--config beachball.config.dev.js"
