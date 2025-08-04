@@ -1,9 +1,11 @@
 name: Automated PR and Auto-merge
 
 on:
-  push:
-    branches:
-      - main # Trigger on push to the main branch
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: boolean
+        description: Deploy to dev environment
 
 jobs:
   create-pr-and-automerge:
