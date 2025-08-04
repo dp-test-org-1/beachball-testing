@@ -17,8 +17,8 @@ jobs:
 
       - name: Create a new branch and commit changes
         run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+          git config user.name "Adu21"
+          git config user.email "adityakavale21@gmail.com"
           git checkout -b feature/automated-change
           echo "Automated update content" >> automated-file.txt
           git add automated-file.txt
@@ -28,7 +28,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT_FOR_PULL_REQUEST }}
           commit-message: "Automated: Update automated-file.txt via GitHub Actions"
           title: "Automated PR: Update automated-file.txt"
           body: |
@@ -41,5 +41,5 @@ jobs:
       - name: Enable Auto-merge on the PR
         uses: peter-evans/enable-pull-request-automerge@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT_FOR_PULL_REQUEST }}
           pull-request-number: ${{ github.event.number }}
