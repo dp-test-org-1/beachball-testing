@@ -1,0 +1,57 @@
+name: Teams Notification Template
+
+inputs:
+  title:
+    description: "Notification title"
+    required: true
+    type: string
+  subtitle:
+    description: "Notification subtitle"
+    required: true
+    type: string
+  TEAMS_WEBHOOK_URL:
+    description: "Microsoft Teams webhook URL"
+    required: true
+    type: string
+  additionalInfo:
+    description: "Additional information to include in the notification"
+    required: false
+    type: string
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send Teams notification
+      run: |
+        curl -X POST --location "${{ inputs.TEAMS_WEBHOOK_URL }}" --header 'Content-Type: application/json' --data '{
+            "type": "message",
+            "attachments": [
+                {
+                    "contentType": "application/vnd.microsoft.card.adaptive",
+                    "content": {
+                        "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+                        "type": "AdaptiveCard",
+                        "version": "1.2",
+                        "body": [
+                            {
+                                "type": "TextBlock",
+                                "text": "${{ inputs.title }}",
+                                "wrap": true,
+                                "color": "good",
+                                "fontType": "Default",
+                                "size": "large",
+                                "weight": "bolder"
+                            },
+                            {
+                                "type": "TextBlock",
+                                "text": "${{ inputs.subtitle }}",
+                                "wrap": true,
+                                "separator": true
+                            },
+                            ${{ inputs.additionalInfo }}
+                        ]
+                    }
+                }
+            ]
+        }'
