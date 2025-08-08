@@ -22,7 +22,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Send Teams notification
+    - name: Send-Teams-notification
+      shell: bash
       run: |
         curl -X POST --location "${{ inputs.TEAMS_WEBHOOK_URL }}" --header 'Content-Type: application/json' --data '{
             "type": "message",
