@@ -1,0 +1,28 @@
+name: Send teams notification
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: get package version
+        id: get_version
+        run: echo "version=$(cat packages\beachball-test-adu\package.json | jq -r '.version')" >> $GITHUB_ENV
+
+      - name: Send Teams notification
+        uses: ./.github/actions/SendTeamsNotification
+        with:
+          title: "Pipeline Triggered"
+          subtitle: "The pipeline has been triggered successfully."
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          additionalInfo: |
+            {
+              "type": "TextBlock",
+              "text": "Version: ${{ env.version }}",
+              "wrap": true
+            }
