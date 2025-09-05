@@ -39,6 +39,8 @@ jobs:
           echo "Creating new release branch"
           git checkout -b ${{env.PUBLISH_NAME}}
           git push --set-upstream origin ${{env.PUBLISH_NAME}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Bump the app version
         run: |
@@ -49,6 +51,8 @@ jobs:
           git add apps/dp-test-app/package.json
           git commit -m "Bump app version (automated)"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install GitHub CLI
         run: |
