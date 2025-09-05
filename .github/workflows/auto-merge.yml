@@ -45,6 +45,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: Install dependencies
+        run: |
+          pnpm install
+
       - name: Bump the app version
         run: |
           pnpm bump
