@@ -1,4 +1,4 @@
-name: Publish Package
+name: Automerge pull requests
 
 on:
   workflow_dispatch:
