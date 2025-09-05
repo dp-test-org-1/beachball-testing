@@ -1,0 +1,51 @@
+name: Publish Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  automerge-pull-requests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set branch name
+        id: branch_name
+        run: echo "PUBLISH_NAME=publish-dp-test-app-$(date +'%Y-%m-%d')-run-${{ github.run_number }}" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - uses: pnpm/action-setup@v4.0.0
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 10.13.1 # locked to workaround issue with postinstall-build in CI in 8.10.0
+          run_install: false
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 22.x
+
+      - name: Git config
+        run: |
+          git config --global user.email imodeljs-admin@users.noreply.github.com
+          git config --global user.name imodeljs-admin
+
+      - name: Create a new branch
+        run: |
+          # Create a new branch with the dynamic branch name
+          echo "Creating new release branch"
+          git checkout -b ${{env.PUBLISH_NAME}}
+          git push --set-upstream origin ${{env.PUBLISH_NAME}}
+
+      - name: Bump the app version
+        run: |
+          pnpm bump
+
+      - name: Commit the bumped app package.json
+        run: |
+          git add apps/dp-test-app/package.json
+          git commit -m "Bump app version (automated)"
+          git push
