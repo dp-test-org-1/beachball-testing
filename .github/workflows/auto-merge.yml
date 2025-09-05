@@ -6,6 +6,9 @@ on:
 jobs:
   automerge-pull-requests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 10
     steps:
       - name: Set branch name
         id: branch_name
