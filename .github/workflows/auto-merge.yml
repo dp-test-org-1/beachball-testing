@@ -53,7 +53,7 @@ jobs:
 
       - name: Commit the bumped app package.json
         run: |
-          git add apps/dp-test-app/package.json
+          git add .
           git commit -m "Bump app version (automated)"
           git push
 
