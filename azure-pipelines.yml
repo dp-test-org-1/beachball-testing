@@ -28,7 +28,16 @@ stages:
     - script: echo $(myGlobalVar)
 
 - stage: Deploy
+  dependsOn: Build
+  condition: ${{eq(parameters.dev, false)}}
   jobs:
   - job: DeployJob
     steps:
     - script: echo $(myGlobalVar)
+
+- stage: XYZ
+  dependsOn: Deploy
+  jobs:
+    - job:
+      steps:
+        - script: echo "XYZ"
