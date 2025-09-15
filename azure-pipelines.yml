@@ -36,7 +36,6 @@ stages:
     - script: echo $(myGlobalVar)
 
 - stage: XYZ
-  dependsOn: Deploy
   jobs:
     - job:
       steps:
