@@ -2,6 +2,21 @@
   "name": "@adu21/beachball-test-adu-2",
   "entries": [
     {
+      "date": "Fri, 14 Nov 2025 12:17:22 GMT",
+      "version": "0.0.17-0",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.17-0",
+      "comments": {
+        "prerelease": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "75f7373fb609ae001e34858ef8f127565e64d006",
+            "comment": "prerelease testing"
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 14 Nov 2025 12:04:38 GMT",
       "version": "0.0.16",
       "tag": "@adu21/beachball-test-adu-2_v0.0.16",
