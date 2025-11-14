@@ -4,7 +4,8 @@ name: Generate Production Release Notes
 on:
   push:
     tags:
-      - 'v*.*.*' # matches semantic version tags like v1.2.3 and not v1.2.3-beta
+      - "@adu21/beachball-test-adu-2_v*.*.*" # matches semantic version tags like v1.2.3 and not v1.2.3-beta
+      - "@adu21/beachball-test-adu_v*.*.*"
 
 jobs:
   release:
