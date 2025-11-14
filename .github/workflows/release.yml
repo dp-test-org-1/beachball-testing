@@ -22,7 +22,6 @@ jobs:
           git config --global user.name Adu2120
 
       - name: Install GitHub CLI
-        if: ${{ github.event.inputs.PR_to_publish_test_app == 'true' }}
         run: |
           # Install GitHub CLI on Ubuntu
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -32,7 +31,6 @@ jobs:
           sudo apt install gh -y
 
       - name: Authenticate with GitHub CLI using environment variable
-        if: ${{ github.event.inputs.PR_to_publish_test_app == 'true' }}
         run: |
           # Auth with GitHub CLI (using environment variable)
           # GitHub CLI automatically looks for GH_TOKEN or GITHUB_TOKEN environment variables
