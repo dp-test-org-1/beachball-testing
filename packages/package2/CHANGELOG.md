@@ -1,8 +1,24 @@
 # Change Log - @adu21/beachball-test-adu-2
 
-This log was last generated on Fri, 14 Nov 2025 11:07:26 GMT and should not be manually modified.
+This log was last generated on Fri, 14 Nov 2025 11:34:15 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.0.12
+
+Fri, 14 Nov 2025 11:34:15 GMT
+
+### Patches
+
+- Fix prop alias in CustomComponent from prop2 to prop3 ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/18b6beb089978194c4d166e9ec036c93682db5fd))
+
+## 0.0.11
+
+Fri, 14 Nov 2025 11:32:22 GMT
+
+### Patches
+
+- Fix prop alias in CustomComponent from prop2 to prop1 ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/3a011bae2404e9cec105820e22ca0cf593a8727c))
 
 ## 0.0.10
 
