@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu-2
 
-This log was last generated on Fri, 14 Nov 2025 11:49:13 GMT and should not be manually modified.
+This log was last generated on Fri, 14 Nov 2025 11:54:05 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.0.15
+
+Fri, 14 Nov 2025 11:54:05 GMT
+
+### Patches
+
+- Fix prop name in CustomComponent for consistency ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/9a019e780898362e5cd3dd7254b0c2307da48829))
 
 ## 0.0.14
 
