@@ -2,6 +2,21 @@
   "name": "@adu21/beachball-test-adu-2",
   "entries": [
     {
+      "date": "Fri, 14 Nov 2025 11:07:26 GMT",
+      "version": "0.0.10",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.10",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "61ac3e419338999fbbbddccf4e4c8e78c20e7601",
+            "comment": "Fix prop alias in CustomComponent from prop2 to prop3"
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 14 Nov 2025 11:01:39 GMT",
       "version": "0.0.9",
       "tag": "@adu21/beachball-test-adu-2_v0.0.9",
