@@ -17,6 +17,11 @@ jobs:
       - name: Setup GitHub CLI
         uses: actions/setup-gh@v2
 
+      - name: Authenticate GitHub CLI
+        run: gh auth login --with-token < token here >
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       # Generate Release Notes using the GitHub CLI
       - name: Create Release with Notes
         run: |
