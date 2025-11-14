@@ -47,3 +47,5 @@ jobs:
             --title "Release ${{ github.ref_name }}" \
             --notes "$(gh release view ${{ github.ref_name }} -q .body || echo 'Initial release notes')" \
             --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
