@@ -1,7 +1,0 @@
-{
-  "type": "patch",
-  "comment": "Fix prop alias in CustomComponent from prop5 to prop2",
-  "packageName": "@adu21/beachball-test-adu-2",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}
