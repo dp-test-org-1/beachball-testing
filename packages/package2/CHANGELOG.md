@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu-2
 
-This log was last generated on Fri, 14 Nov 2025 12:46:49 GMT and should not be manually modified.
+This log was last generated on Fri, 14 Nov 2025 12:54:18 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.0.18
+
+Fri, 14 Nov 2025 12:54:18 GMT
+
+### Patches
+
+- prerelease testing ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/263090b01574dc7d6be32f5a0fb28617a6a71848))
 
 ## 0.0.17
 
