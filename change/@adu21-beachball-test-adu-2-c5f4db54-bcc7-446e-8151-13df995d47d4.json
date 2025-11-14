@@ -1,7 +1,0 @@
-{
-  "type": "prerelease",
-  "comment": "prerelease testing",
-  "packageName": "@adu21/beachball-test-adu-2",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}
