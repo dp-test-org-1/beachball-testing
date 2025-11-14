@@ -2,6 +2,21 @@
   "name": "@adu21/beachball-test-adu-2",
   "entries": [
     {
+      "date": "Fri, 14 Nov 2025 12:04:38 GMT",
+      "version": "0.0.16",
+      "tag": "@adu21/beachball-test-adu-2_v0.0.16",
+      "comments": {
+        "patch": [
+          {
+            "author": "Aditya.Kavale@bentley.com",
+            "package": "@adu21/beachball-test-adu-2",
+            "commit": "28095b191b2766b4201b84a91abea3ab013df972",
+            "comment": "Fix prop name in CustomComponent for consistency"
+          }
+        ]
+      }
+    },
+    {
       "date": "Fri, 14 Nov 2025 11:54:05 GMT",
       "version": "0.0.15",
       "tag": "@adu21/beachball-test-adu-2_v0.0.15",
