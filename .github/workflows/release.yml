@@ -16,13 +16,29 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
 
-      - uses: cli/gh-action@v2
-        name: Install GitHub CLI
+      - name: Git config
+        run: |
+          git config --global user.email imodeljs-admin@users.noreply.github.com
+          git config --global user.name imodeljs-admin
 
-      - name: Authenticate GitHub CLI
-        run: gh auth login --with-token < token here >
+      - name: Install GitHub CLI
+        if: ${{ github.event.inputs.PR_to_publish_test_app == 'true' }}
+        run: |
+          # Install GitHub CLI on Ubuntu
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Authenticate with GitHub CLI using environment variable
+        if: ${{ github.event.inputs.PR_to_publish_test_app == 'true' }}
+        run: |
+          # Auth with GitHub CLI (using environment variable)
+          # GitHub CLI automatically looks for GH_TOKEN or GITHUB_TOKEN environment variables
+          gh auth status
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Generate Release Notes using the GitHub CLI
       - name: Create Release with Notes
