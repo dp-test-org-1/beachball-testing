@@ -1,7 +1,0 @@
-{
-  "type": "patch",
-  "comment": "Fix prop alias in CustomSelect from prop4 to prop5",
-  "packageName": "@adu21/beachball-test-adu-2",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}

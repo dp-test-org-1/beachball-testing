@@ -1,8 +1,16 @@
 # Change Log - @adu21/beachball-test-adu
 
-This log was last generated on Fri, 14 Nov 2025 10:05:41 GMT and should not be manually modified.
+This log was last generated on Fri, 14 Nov 2025 10:43:43 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.3.6
+
+Fri, 14 Nov 2025 10:43:43 GMT
+
+### Patches
+
+- Fix prop alias in CustomSelect from prop4 to prop5 ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/fde5c358cb741abb5cc4c9638eb39d7cf2b20af8))
 
 ## 0.3.5
 
