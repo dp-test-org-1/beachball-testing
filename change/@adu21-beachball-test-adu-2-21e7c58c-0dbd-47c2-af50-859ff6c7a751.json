@@ -1,7 +1,0 @@
-{
-  "type": "patch",
-  "comment": "fix: correct prop variable name in CustomComponent",
-  "packageName": "@adu21/beachball-test-adu-2",
-  "email": "Aditya.Kavale@bentley.com",
-  "dependentChangeType": "patch"
-}
