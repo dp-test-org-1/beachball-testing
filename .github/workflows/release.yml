@@ -43,7 +43,7 @@ jobs:
         run: |
           gh release create ${{ github.ref_name }} \
             --title "${{ github.ref_name }}" \
-            --notes "$(gh release view ${{ github.ref_name }} --json body -q .body || echo 'Initial release notes')" \
+            --notes "$(gh release create ${{ github.ref_name }} --generate-notes --json body -q .body || echo 'Initial release notes')" \
             --draft=false
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
