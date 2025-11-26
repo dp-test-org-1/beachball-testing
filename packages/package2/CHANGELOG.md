@@ -1,8 +1,17 @@
 # Change Log - @adu21/beachball-test-adu-2
 
-This log was last generated on Wed, 19 Nov 2025 05:26:12 GMT and should not be manually modified.
+This log was last generated on Wed, 26 Nov 2025 12:52:27 GMT and should not be manually modified.
 
 <!-- Start content -->
+
+## 0.1.1
+
+Wed, 26 Nov 2025 12:52:27 GMT
+
+### Patches
+
+- fix: update version numbers in package.json files for beachball-test-adu and package2 ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/a8a64e1625a44827d0387c9aae6d02096989eee7))
+- fix: update prop variable name in CustomComponent ([commit](https://github.com/dp-test-org-1/beachball-testing/commit/not available))
 
 ## 0.0.21
 
