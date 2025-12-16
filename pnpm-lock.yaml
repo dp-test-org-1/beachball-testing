@@ -83,6 +83,9 @@ importers:
       '@adu21/beachball-test-adu':
         specifier: workspace:*
         version: link:../../packages/beachball-test-adu
+      '@adu21/beachball-test-adu-3':
+        specifier: workspace:*
+        version: link:../../packages/beachball-test-adu-3
       next:
         specifier: 15.1.6
         version: 15.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)

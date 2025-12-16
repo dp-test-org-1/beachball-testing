@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@adu21/beachball-test-adu": "workspace:*",
+    "@adu21/beachball-test-adu-3": "workspace:*",
     "react": "catalog:react",
     "react-dom": "^19.0.0",
     "next": "15.1.6"
