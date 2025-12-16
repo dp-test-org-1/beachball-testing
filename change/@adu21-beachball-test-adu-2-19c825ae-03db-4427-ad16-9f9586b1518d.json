@@ -1,0 +1,7 @@
+{
+  "type": "minor",
+  "comment": "fix: update prop alias in CustomComponent for consistency",
+  "packageName": "@adu21/beachball-test-adu-2",
+  "email": "Aditya.Kavale@bentley.com",
+  "dependentChangeType": "patch"
+}
