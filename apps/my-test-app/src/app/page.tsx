@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import CustomSelect from "@adu21/beachball-test-adu/Select";
+import CustomSelect2 from "@adu21/beachball-test-adu-3/Select";
 
 export default function Home() {
   return (
@@ -60,6 +61,7 @@ export default function Home() {
           Go to nextjs.org →
         </a>
         <CustomSelect prop1="value1" />
+        <CustomSelect2 prop1="value2" />
       </footer>
     </div>
   );

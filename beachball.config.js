@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 module.exports = {
-  bumpDeps: false,
   access: "public",
   tag: "latest",
   scope: ["packages/beachball-test-adu", "packages/package2"],
