@@ -131,6 +131,22 @@ importers:
         specifier: catalog:ts
         version: 5.7.3
 
+  packages/beachball-test-adu-3:
+    dependencies:
+      '@adu21/beachball-test-adu-2':
+        specifier: workspace:*
+        version: link:../package2
+      build:
+        specifier: ^0.1.4
+        version: 0.1.4
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+    devDependencies:
+      typescript:
+        specifier: catalog:ts
+        version: 5.7.3
+
   packages/package2:
     dependencies:
       build:
