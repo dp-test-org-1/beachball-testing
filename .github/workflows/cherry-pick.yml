@@ -1,0 +1,141 @@
+name: Cherry Pick
+
+on:
+  push:
+    branches:
+      - release/current
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cherry pick commit
+        env:
+          GH_TOKEN: ${{ secrets.PAT_EXTENSION_SERVICE }}
+        run: |
+          git config --global user.email "imodeljs-admin@users.noreply.github.com"
+          git config --global user.name "imodeljs-admin"
+
+          echo "git reset --hard"
+          git reset --hard
+          git fetch origin
+
+          echo "Getting source branch"
+          git checkout "release/current"
+
+          echo "getting commit id"
+          CommitId=$(git rev-parse HEAD)
+          ShortCommitId=$(git rev-parse --short=8 "$CommitId")
+          echo "Commit id is : $CommitId"
+          echo "COMMIT_ID=$CommitId" >> "$GITHUB_ENV"
+
+          echo "checkout to main branch"
+          git checkout "main"
+
+          CommitMessage=$(git log -1 --format=%s "$CommitId")
+          echo "COMMIT_MESSAGE=$CommitMessage" >> "$GITHUB_ENV"
+
+          PR_INFO_SCRIPT=".github/scripts/retrieve_pr_info.sh"
+          PR_INFO_JSON=$(bash "$PR_INFO_SCRIPT" "$CommitId")
+
+          PR_SUCCESS=$(echo "$PR_INFO_JSON" | jq -r '.PRSuccess')
+          # Fail if PR info could not be retrieved from the script
+          if [[ "$PR_SUCCESS" != "true" ]]; then
+            echo "Error: No PR info found for commit $CommitId"
+            exit 1
+          fi
+
+          PR_TITLE=$(echo "$PR_INFO_JSON" | jq -r '.title')
+          PR_DESCRIPTION=$(echo "$PR_INFO_JSON" | jq -r '.description')
+          CHERRY_PICKED_LINE=$(echo "$PR_INFO_JSON" | jq -r '.cherryPickedLine')
+          AUTHOR_ID=$(echo "$PR_INFO_JSON" | jq -r '.authorId')
+
+          echo "Resolved PR info JSON:"
+          echo "$PR_INFO_JSON" | jq '.'
+
+          {
+            echo "PR_TITLE<<EOF"
+            echo "${PR_TITLE}"
+            echo "EOF"
+            echo "PR_DESCRIPTION<<EOF"
+            echo "${PR_DESCRIPTION}"
+            echo "EOF"
+            echo "CHERRY_PICKED_LINE<<EOF"
+            echo "${CHERRY_PICKED_LINE}"
+            echo "EOF"
+            echo "AUTHOR_ID=${AUTHOR_ID}"
+          } >> "$GITHUB_ENV"
+
+      - name: Create cherry-pick branch
+        run: |
+          git checkout "main"
+          git pull --unshallow
+
+          ShortCommitId=$(git rev-parse --short=8 "$COMMIT_ID")
+
+          echo "creating target branch from main"
+          TARGET_BRANCH="cherry-pick/commit-$ShortCommitId-to-main-run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          echo "CHERRY_PICK_BRANCH=$TARGET_BRANCH" >> "$GITHUB_ENV"
+          git checkout -b "$TARGET_BRANCH"
+
+      - name: Cherry-pick and push
+        run: |
+          echo "cherry-picking source commit to target branch"
+          # Fail the workflow if cherry-pick encounters conflicts or errors
+          if ! git cherry-pick "$COMMIT_ID"; then
+            echo "Cherry pick failed, exiting with error"
+            exit 1
+          fi
+
+          echo "pushing target branch"
+          git push -u origin "$CHERRY_PICK_BRANCH"
+
+      - name: Create Pull Request
+        shell: bash
+        run: |
+          echo "Now create the PR"
+
+          # Fall back to commit message if PR title was not resolved
+          if [[ -z "$PR_TITLE" || "$PR_TITLE" == "null" ]]; then
+            PR_TITLE="$COMMIT_MESSAGE"
+          fi
+
+          # Clear null description to avoid literal "null" in PR body
+          if [[ "$PR_DESCRIPTION" == "null" ]]; then
+            PR_DESCRIPTION=""
+          fi
+
+          # Default cherry-picked line if not provided by the PR info script
+          if [[ "$CHERRY_PICKED_LINE" == "null" ]]; then
+            CHERRY_PICKED_LINE="- Cherry-picked from commit $COMMIT_ID"
+          fi
+
+          PR_TITLE="🍒 $PR_TITLE"
+
+          echo "PR_TITLE: $PR_TITLE"
+          echo "CHERRY_PICKED_LINE: $CHERRY_PICKED_LINE"
+
+          PR_BODY=$(cat <<EOF
+          ${CHERRY_PICKED_LINE}
+
+          ${PR_DESCRIPTION}
+          EOF
+          )
+
+          echo "PR_BODY_START"
+          echo "$PR_BODY"
+          echo "PR_BODY_END"
+
+          PR_URL=$(gh pr create \
+            --title "$PR_TITLE" \
+            --body "$PR_BODY" \
+            --base "main" \
+            --head "$CHERRY_PICK_BRANCH" \
+            --reviewer "$AUTHOR_ID")
+
+          echo "Created PR: $PR_URL"
+        env:
+          GH_TOKEN: ${{ github.token }}
