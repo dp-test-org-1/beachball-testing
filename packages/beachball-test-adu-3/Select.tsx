@@ -10,6 +10,7 @@ const CustomSelect2 = ({ prop1 = "Hello" }) => {
     <div>
       <p>prop5: {prop1}</p>
       <CustomComponent prop1={prop1} />
+      <p>prop7: {prop1}</p>
     </div>
   );
 };
