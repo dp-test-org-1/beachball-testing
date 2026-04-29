@@ -15,7 +15,7 @@ jobs:
       - name: Update Project Status
         # We use 'env' to safely pass variables to the shell script
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.PR_STATUS_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
           # Define your Project ID and the name of the 'Done' column
           PROJECT_ID: "1"
