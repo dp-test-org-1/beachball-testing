@@ -19,7 +19,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           # Define your Project ID and the name of the 'Done' column
           PROJECT_ID: "1"
-          TARGET_STATUS: "Done"
+          TARGET_STATUS: "Complete"
         run: |
           # 1. Use GitHub CLI to find linked issues for this PR
           # The 'closingIssuesReferences' returns issues linked via keywords
