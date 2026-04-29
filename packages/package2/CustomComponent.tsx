@@ -6,7 +6,7 @@
 const CustomComponent = ({ prop1: prop2 = "Hello" }) => {
   return (
     <div>
-      <p>prop6: {prop2}</p>
+      <p>prop2: {prop2}</p>
     </div>
   );
 };
