@@ -5,11 +5,11 @@
 
 import CustomComponent from "@adu21/beachball-test-adu-2/CustomComponent";
 
-const CustomSelect2 = ({ prop1: prop2 = "Hello" }) => {
+const CustomSelect2 = ({ prop1: prop3 = "Hello" }) => {
   return (
     <div>
-      <p>prop5: {prop2}</p>
-      <CustomComponent prop1={prop2} />
+      <p>prop5: {prop3}</p>
+      <CustomComponent prop1={prop3} />
     </div>
   );
 };
