@@ -35,7 +35,7 @@ jobs:
           echo "COMMIT_ID=$CommitId" >> "$GITHUB_ENV"
 
           echo "checkout to main branch"
-          git checkout "aditya/test1"
+          git checkout "main"
 
           CommitMessage=$(git log -1 --format=%s "$CommitId")
           echo "COMMIT_MESSAGE=$CommitMessage" >> "$GITHUB_ENV"
@@ -73,7 +73,7 @@ jobs:
 
       - name: Create cherry-pick branch
         run: |
-          git checkout "aditya/test1"
+          git checkout "main"
           git pull --unshallow
 
           ShortCommitId=$(git rev-parse --short=8 "$COMMIT_ID")
@@ -134,10 +134,10 @@ jobs:
           PR_URL=$(gh pr create \
             --title "$PR_TITLE" \
             --body "$PR_BODY" \
-            --base "aditya/test1" \
+            --base "main" \
             --head "$CHERRY_PICK_BRANCH" \
             --reviewer "$AUTHOR_ID")
 
           echo "Created PR: $PR_URL"
         env:
-          GH_TOKEN: ${{ secrets.PAT_EXTENSION_SERVICE }}
+          GH_TOKEN: ${{ github.token }}
