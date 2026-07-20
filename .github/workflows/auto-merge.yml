@@ -45,10 +45,9 @@ jobs:
             echo "BRANCH_NAME=${{ github.ref }}" >> $GITHUB_ENV
             echo "OPENSITEPLUS_BRANCH=${{ github.event.inputs.opensiteplus_branch }}" >> $GITHUB_ENV
           fi
-        - name: debug info
-          run: |
-            echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
-            echo "OPENSITEPLUS_BRANCH=${{ env.OPENSITEPLUS_BRANCH }}"
-            echo "environment=${{ github.event.inputs.environment }}"
-            echo "package_to_publish=${{ github.event.inputs.package_to_publish }}"
-
+      - name: debug info
+        run: |
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+          echo "OPENSITEPLUS_BRANCH=${{ env.OPENSITEPLUS_BRANCH }}"
+          echo "environment=${{ github.event.inputs.environment }}"
+          echo "package_to_publish=${{ github.event.inputs.package_to_publish }}"
