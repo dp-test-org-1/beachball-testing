@@ -1,109 +1,54 @@
 name: Automerge pull requests
 
+# Run this workflow manually from github actions and as per following schedule.
+# Scheduled it to run on specific days of the week (Monday, Wednesday, Friday) at 5:30 AM UTC (11am IST).
 on:
+  schedule:
+    - cron: "30 5 * * 1,3,5"
   workflow_dispatch:
+    inputs:
+      environment:
+        type: boolean
+        description: Publish pre-release versions
+        default: false
+      package_to_publish:
+        type: choice
+        description: Select the package to publish
+        options:
+          - all
+          - substation-design
+          - site-design
+        default: all
+      opensiteplus_branch:
+        type: string
+        description: Branch name for OpenSitePlus integration
+        default: main
 
 jobs:
-  automerge-pull-requests:
+  trigger-pipeline:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    timeout-minutes: 10
     steps:
-      - name: Set branch name
-        id: branch_name
-        run: echo "PUBLISH_NAME=publish-dp-test-app-$(date +'%Y-%m-%d')-run-${{ github.run_number }}" >> $GITHUB_ENV
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - uses: pnpm/action-setup@v4.0.0
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 10.13.1 # locked to workaround issue with postinstall-build in CI in 8.10.0
-          run_install: false
-
-      - name: Use Node.js 22.x
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: 22.x
-
-      - name: Git config
+      - name: set branch name according to release strategy
         run: |
-          git config --global user.email ${{secrets.GIT_USER_EMAIL}}
-          git config --global user.name ${{secrets.GIT_USER_NAME}}
-
-      - name: Create a new branch
-        run: |
-          # Create a new branch with the dynamic branch name
-          echo "Creating new release branch"
-          git checkout -b ${{env.PUBLISH_NAME}}
-          git push --set-upstream origin ${{env.PUBLISH_NAME}}
-
-      - name: Install dependencies
-        run: |
-          pnpm install
-
-      - name: Bump the app version
-        run: |
-          pnpm bump
-
-      - name: Commit the bumped app package.json
-        run: |
-          git add .
-          git commit -m "Bump app version (automated)"
-          git push
-
-      - name: Install GitHub CLI
-        run: |
-          # Install GitHub CLI on Ubuntu
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          sudo apt update
-          sudo apt install gh -y
-
-      - name: Authenticate with GitHub CLI using environment variable
-        run: |
-          # Auth with GitHub CLI (using environment variable)
-          # GitHub CLI automatically looks for GH_TOKEN or GITHUB_TOKEN environment variables
-          gh auth status
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Create a pull request
-        run: |
-          echo "Now create the PR"
-          PR_BODY="This PR was automatically created to bump the version of dp-test-app after publishing.
-          ## Category
-          #### [minimum required reviewers]
-
-          <!-- (select only ONE) -->
-          - [x] **Trivial** [0, 1*]: Docs, comments, version bumps.
-          - [ ] **Low** [1]: Minor bug fixes, style changes, isolated refactors.
-          - [ ] **Medium** [2, 1**]: Large modifications, new features; affects several areas.
-          - [ ] **High** [2]: Breaking, security, API, or critical-impact changes."
-
-          # Create the PR and capture its URL in a variable
-          PR_URL=$(gh pr create --base "${{ github.ref }}" --head "${{env.PUBLISH_NAME}}" --title "[Automated] PR for bumping version of dp-test-app after publish" --body "$PR_BODY")
-
-          # Check if the PR was created successfully
-          if [ -z "$PR_URL" ]; then
-            echo "Failed to create PR. Aborting."
-            exit 1
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "schedule trigger"
+            day=$(date +%d)
+            if [ "$day" -ge 1 ] && [ "$day" -le 14 ]; then
+              echo "BRANCH_NAME=refs/heads/main" >> $GITHUB_ENV
+              echo "OPENSITEPLUS_BRANCH=main" >> $GITHUB_ENV
+            elif [ "$day" -ge 15 ] && [ "$day" -le 31 ]; then
+              echo "BRANCH_NAME=refs/heads/release/current" >> $GITHUB_ENV
+              echo "OPENSITEPLUS_BRANCH=release/current" >> $GITHUB_ENV
+            fi            
+          else
+            echo "manual trigger"
+            echo "BRANCH_NAME=${{ github.ref }}" >> $GITHUB_ENV
+            echo "OPENSITEPLUS_BRANCH=${{ github.event.inputs.opensiteplus_branch }}" >> $GITHUB_ENV
           fi
+        - name: debug info
+          run: |
+            echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+            echo "OPENSITEPLUS_BRANCH=${{ env.OPENSITEPLUS_BRANCH }}"
+            echo "environment=${{ github.event.inputs.environment }}"
+            echo "package_to_publish=${{ github.event.inputs.package_to_publish }}"
 
-          # Make the PR_URL available to subsequent steps
-          echo "PR_URL=$PR_URL" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Enable Auto-Merge for PR
-        run: |
-          echo "Enabling auto-merge for PR: ${{env.PR_URL}}"
-          gh pr merge "${{env.PR_URL}}" --squash --admin -m "Squashed PR #42: Fix issue with API request handling" --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
