@@ -4,7 +4,7 @@ name: Automerge pull requests
 # Scheduled it to run on specific days of the week (Monday, Wednesday, Friday) at 5:30 AM UTC (11am IST).
 on:
   schedule:
-    - cron: "0 7 * * 1,3,5"
+    - cron: "6 7 * * 1,3,5"
   workflow_dispatch:
     inputs:
       environment:
