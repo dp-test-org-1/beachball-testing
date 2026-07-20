@@ -1,0 +1,54 @@
+name: Automerge pull requests
+
+# Run this workflow manually from github actions and as per following schedule.
+# Scheduled it to run on specific days of the week (Monday, Wednesday, Friday) at 5:30 AM UTC (11am IST).
+on:
+  schedule:
+    - cron: "40 7 * * 1,3,5"
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: boolean
+        description: Publish pre-release versions
+        default: false
+      package_to_publish:
+        type: choice
+        description: Select the package to publish
+        options:
+          - all
+          - substation-design
+          - site-design
+        default: all
+      opensiteplus_branch:
+        type: string
+        description: Branch name for OpenSitePlus integration
+        default: main
+
+jobs:
+  trigger-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set branch name according to release strategy
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            echo "schedule trigger"
+            day=$(date +%d)
+            if [ "$day" -ge 1 ] && [ "$day" -le 14 ]; then
+              echo "BRANCH_NAME=refs/heads/main" >> $GITHUB_ENV
+              echo "OPENSITEPLUS_BRANCH=main" >> $GITHUB_ENV
+            elif [ "$day" -ge 15 ] && [ "$day" -le 31 ]; then
+              echo "BRANCH_NAME=refs/heads/release/current" >> $GITHUB_ENV
+              echo "OPENSITEPLUS_BRANCH=release/current" >> $GITHUB_ENV
+            fi            
+          else
+            echo "manual trigger"
+            echo "BRANCH_NAME=${{ github.ref }}" >> $GITHUB_ENV
+            echo "OPENSITEPLUS_BRANCH=${{ github.event.inputs.opensiteplus_branch }}" >> $GITHUB_ENV
+          fi
+      - name: debug info
+        run: |
+          echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
+          echo "OPENSITEPLUS_BRANCH=${{ env.OPENSITEPLUS_BRANCH }}"
+          echo "environment=${{ github.event.inputs.environment }}"
+          echo "package_to_publish=${{ github.event.inputs.package_to_publish }}"
