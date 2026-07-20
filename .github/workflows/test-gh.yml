@@ -4,7 +4,7 @@ name: test gh workflows
 # Scheduled it to run on specific days of the week (Monday, Wednesday, Friday) at 5:30 AM UTC (11am IST).
 on:
   schedule:
-    - cron: "45 7 * * 1,3,5"
+    - cron: "0 8 * * 1,3,5"
 
 jobs:
   trigger-pipeline:
@@ -21,15 +21,16 @@ jobs:
             elif [ "$day" -ge 15 ] && [ "$day" -le 31 ]; then
               echo "BRANCH_NAME=refs/heads/release/current" >> $GITHUB_ENV
               echo "OPENSITEPLUS_BRANCH=release/current" >> $GITHUB_ENV
+              echo "environment=false" >> $GITHUB_ENV
+              echo "package_to_publish=all" >> $GITHUB_ENV
             fi            
           else
             echo "manual trigger"
             echo "BRANCH_NAME=${{ github.ref }}" >> $GITHUB_ENV
-            echo "OPENSITEPLUS_BRANCH=${{ github.event.inputs.opensiteplus_branch }}" >> $GITHUB_ENV
           fi
       - name: debug info
         run: |
           echo "BRANCH_NAME=${{ env.BRANCH_NAME }}"
           echo "OPENSITEPLUS_BRANCH=${{ env.OPENSITEPLUS_BRANCH }}"
-          echo "environment=${{ github.event.inputs.environment }}"
-          echo "package_to_publish=${{ github.event.inputs.package_to_publish }}"
+          echo "environment=${{ env.environment }}"
+          echo "package_to_publish=${{ env.package_to_publish }}"
