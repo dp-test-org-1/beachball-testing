@@ -1,2 +1,2 @@
 # beachball-testing
-This repository is to do some trials on beachball.
+This Repository is to do some trials on beachball.
