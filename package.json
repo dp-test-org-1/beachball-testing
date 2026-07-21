@@ -52,7 +52,7 @@
     "turbo": "^1.7.0",
     "workspace-tools": "^0.34.6"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.17.1",
   "publishConfig": {
     "registry": "http://localhost:4873"
   }
