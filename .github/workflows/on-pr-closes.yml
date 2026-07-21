@@ -40,6 +40,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Install tsx
+        shell: bash
+        run: pnpm install -g tsx
+
       - name: Update Project Status
         # We use 'env' to safely pass variables to the shell script
         env:
