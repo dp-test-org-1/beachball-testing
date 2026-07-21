@@ -12,23 +12,46 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: "22.x"
+
+      - name: Install pnpm
+        shell: bash
+        run: |
+          pn=$(node -p "require('./package.json').packageManager?.split('@')[1] || 'latest'")
+          corepack prepare "pnpm@$pn" --activate
+          corepack enable pnpm
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Update Project Status
         # We use 'env' to safely pass variables to the shell script
         env:
           GH_TOKEN: ${{ secrets.PR_STATUS_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           # Define your Project ID and the name of the 'Done' column
           PROJECT_ID: "1"
           TARGET_STATUS: "Complete"
         run: |
           # 1. Use GitHub CLI to find linked issues for this PR
           # The 'closingIssuesReferences' returns issues linked via keywords
-          issues=$(gh pr view "$PR_URL" --json closingIssuesReferences -q '.closingIssuesReferences[].number')
+          gh pr view "$PR_URL" --json closingIssuesReferences -q '.closingIssuesReferences[].number'
 
-          for issue_num in $issues; do
-            echo "Moving issue #$issue_num to $TARGET_STATUS..."
-            
-            # 2. Use the 'gh project' command to move the issue
-            # Note: This requires the issue to already be added to the project
-            gh project item-edit --id "$PROJECT_ID" --project-id "$PROJECT_ID" --field "Status" --value "$TARGET_STATUS"
-          done
+          pnpm exec tsx scripts/moveLinkedIssueToDone.ts --pr-number $PR_NUMBER

@@ -2,6 +2,7 @@
   "name": "beachball-testing",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "repository": {
     "url": "https://github.com/dp-test-org-1/beachball-testing.git"
   },
