@@ -4,9 +4,9 @@ on:
     types: [open, synchronize, closed]
     branches: [main, release/current*, release/prod]
 
-permissions:
-  repository-projects: write # Required to update project items
-  pull-requests: read
+# permissions:
+#   repository-projects: write # Required to update project items
+#   pull-requests: read
 
 jobs:
   move_to_done:
