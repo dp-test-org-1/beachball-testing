@@ -42,7 +42,7 @@ jobs:
 
       - name: Install tsx
         shell: bash
-        run: pnpm install -g tsx
+        run: pnpm install tsx
 
       - name: Update Project Status
         # We use 'env' to safely pass variables to the shell script
