@@ -2,6 +2,7 @@ name: Move Linked Issue to Done
 on:
   pull_request:
     types: [open, synchronize, closed]
+    branches: [main, release/current*, release/prod]
 
 permissions:
   repository-projects: write # Required to update project items
