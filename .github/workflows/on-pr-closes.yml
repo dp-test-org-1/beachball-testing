@@ -40,8 +40,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: pnpm Install tsx
-        run: pnpm install -g tsx
+      - name: pnpm install
+        run: pnpm install
 
       - name: Update Project Status
         # We use 'env' to safely pass variables to the shell script
