@@ -45,4 +45,4 @@ jobs:
           # The 'closingIssuesReferences' returns issues linked via keywords
           gh pr view "$PR_URL" --json closingIssuesReferences -q '.closingIssuesReferences[].number'
 
-          pnpm exec scripts/moveLinkedIssueToDone.ts --pr-number $PR_NUMBER
+          pnpm exec tsx scripts/moveLinkedIssueToDone.ts --pr-number $PR_NUMBER
