@@ -1,0 +1,252 @@
+name: Agentic audit fix
+
+# Agentic workflow that remediates HIGH / CRITICAL Dependabot alerts (and the
+# matching npm audit advisories), then opens a PR targeting `main`.
+#
+# Triggers:
+#   1. repository_dispatch (event type: dependabot-alert) - fired by the
+#      Dependabot alert webhook via a GitHub App / webhook forwarder whenever
+#      a new high/critical alert is created.
+#   2. schedule - polls the Dependabot alerts REST API every 30 minutes as a
+#      safety net in case the webhook is missed, and only continues if there
+#      is at least one open high/critical alert.
+#   3. workflow_dispatch - manual on-demand run.
+on:
+  repository_dispatch:
+    types:
+      - dependabot-alert
+      - dependabot-alert-high
+      - dependabot-alert-critical
+  workflow_dispatch:
+    inputs:
+      severity:
+        description: "Minimum severity to fix (low | moderate | high | critical)"
+        required: false
+        default: "high"
+        type: choice
+        options:
+          - low
+          - moderate
+          - high
+          - critical
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: read
+
+jobs:
+  audit-fix:
+    runs-on: ubuntu-latest
+    env:
+      SEVERITY: ${{ github.event.inputs.severity || 'high' }}
+      BRANCH_NAME: chore/audit-fix-${{ github.run_id }}
+      BASE_BRANCH: main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check open Dependabot alerts
+        id: dependabot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          # Query open Dependabot alerts at the requested severity or higher.
+          # Requires `security-events: read` permission on the job (set above).
+          # If the token cannot read Dependabot alerts (e.g. GITHUB_TOKEN on
+          # some plans), we fall back to running audit locally later.
+          set +e
+          alerts_json=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/dependabot/alerts?state=open&severity=${SEVERITY},critical&per_page=100" 2>/tmp/gh-err)
+          gh_exit=$?
+          set -e
+
+          if [ "$gh_exit" -ne 0 ]; then
+            echo "::warning::Could not read Dependabot alerts (exit $gh_exit): $(cat /tmp/gh-err)"
+            echo "alert_count=unknown" >> "$GITHUB_OUTPUT"
+            # Only proceed automatically when a human/webhook explicitly triggered us.
+            if [ "${{ github.event_name }}" = "schedule" ]; then
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "should_run=true" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
+
+          count=$(echo "$alerts_json" | node -e "
+            let s=''; process.stdin.on('data', c=>s+=c).on('end', ()=>{
+              try { const a = JSON.parse(s); console.log(Array.isArray(a) ? a.length : 0); }
+              catch { console.log(0); }
+            });
+          ")
+          echo "alert_count=$count" >> "$GITHUB_OUTPUT"
+          echo "Open Dependabot alerts at severity >= ${SEVERITY}: $count"
+
+          if [ "$count" -gt 0 ] || [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "should_run=true"  >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Install pnpm
+        shell: bash
+        run: |
+          pn=$(node -p "require('./package.json').packageManager?.split('@')[1] || 'latest'")
+          corepack prepare "pnpm@$pn" --activate
+          corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run audit and capture report
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          # pnpm audit understands the same severity levels as npm audit.
+          pnpm audit --audit-level "$SEVERITY" --json > audit-report.json
+          audit_exit=$?
+          set -e
+
+          echo "audit_exit=$audit_exit" >> "$GITHUB_OUTPUT"
+
+          # Count vulnerabilities at or above the requested severity.
+          vuln_count=$(node -e "
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+            const order = { info: 0, low: 1, moderate: 2, high: 3, critical: 4 };
+            const min = order['${SEVERITY}'];
+            const meta = report.metadata && report.metadata.vulnerabilities || {};
+            let total = 0;
+            for (const [level, n] of Object.entries(meta)) {
+              if ((order[level] ?? -1) >= min) total += n;
+            }
+            console.log(total);
+          ")
+          echo "vuln_count=$vuln_count" >> "$GITHUB_OUTPUT"
+          echo "Found $vuln_count vulnerabilities at severity >= $SEVERITY"
+
+      - name: Short-circuit when nothing to fix
+        if: steps.audit.outputs.vuln_count == '0'
+        run: |
+          echo "No vulnerabilities at severity >= $SEVERITY. Nothing to do."
+
+      - name: Create working branch
+        if: steps.audit.outputs.vuln_count != '0'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH_NAME"
+
+      - name: Install Copilot CLI
+        if: steps.audit.outputs.vuln_count != '0'
+        run: npm install -g @github/copilot
+
+      - name: Run Copilot CLI to remediate vulnerabilities
+        if: steps.audit.outputs.vuln_count != '0'
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.GH_COPILOT_PAT }}
+        run: |
+          copilot -p "You are fixing npm audit vulnerabilities in a pnpm monorepo. \
+            The file audit-report.json at the repo root contains the current \
+            'pnpm audit --json' output. Focus ONLY on advisories whose severity is \
+            '${SEVERITY}' or higher. \
+            For each affected package: \
+              1. Prefer bumping the vulnerable dependency to the lowest safe version \
+                 listed in the advisory (patch/minor first, only bump majors when \
+                 unavoidable). \
+              2. Update the version in the appropriate package.json (root or a \
+                 workspace under packages/*, apps/*), respecting existing semver \
+                 ranges and the pnpm catalog. Do NOT edit lockfiles by hand. \
+              3. If a direct fix is not available, add a pnpm 'overrides' entry in \
+                 the root package.json pinning the transitive dependency to a safe \
+                 version. \
+            After editing package.json files, run 'pnpm install --no-frozen-lockfile' \
+            to refresh pnpm-lock.yaml, then re-run 'pnpm audit --audit-level \
+            ${SEVERITY}' and iterate until it reports no remaining advisories at that \
+            level (or no further safe fix exists). \
+            Do not modify unrelated files. Write a short markdown summary of the \
+            packages you changed, the old->new versions, and any advisories you \
+            could not fix to audit-fix-summary.md." \
+            --allow-tool='shell(pnpm:*)' \
+            --allow-tool='shell(node:*)' \
+            --allow-tool='shell(cat:*)' \
+            --allow-tool='shell(ls:*)' \
+            --allow-tool='shell(git:diff)' \
+            --allow-tool='shell(git:status)' \
+            --allow-tool=write \
+            --no-ask-user
+
+      - name: Verify remediation
+        if: steps.audit.outputs.vuln_count != '0'
+        id: verify
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --audit-level "$SEVERITY"
+          echo "post_audit_exit=$?" >> "$GITHUB_OUTPUT"
+          set -e
+
+      - name: Detect changes
+        if: steps.audit.outputs.vuln_count != '0'
+        id: changes
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          # Never commit the raw audit JSON - it is a build artifact.
+          rm -f audit-report.json
+          git add -A
+          git commit -m "chore(security): fix ${SEVERITY}+ npm audit vulnerabilities"
+          git push origin "$BRANCH_NAME"
+
+      - name: Open pull request
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          body_file=audit-fix-summary.md
+          if [ ! -f "$body_file" ]; then
+            printf "Automated remediation of \`pnpm audit\` findings at severity >= %s.\n" "$SEVERITY" > "$body_file"
+          fi
+
+          gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH_NAME" \
+            --title "chore(security): fix ${SEVERITY}+ npm audit vulnerabilities" \
+            --body-file "$body_file" \
+            --label "security" \
+            --label "automated" || \
+          gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH_NAME" \
+            --title "chore(security): fix ${SEVERITY}+ npm audit vulnerabilities" \
+            --body-file "$body_file"
+
+      - name: Report unresolved advisories
+        if: steps.changes.outputs.has_changes == 'true' && steps.verify.outputs.post_audit_exit != '0'
+        run: |
+          echo "::warning::pnpm audit still reports advisories at severity >= ${SEVERITY} after automated fixes. Manual review required."
+
+      - name: No changes produced
+        if: steps.audit.outputs.vuln_count != '0' && steps.changes.outputs.has_changes == 'false'
+        run: |
+          echo "::warning::Copilot CLI did not produce any file changes for ${SEVERITY}+ advisories. Manual investigation needed."
