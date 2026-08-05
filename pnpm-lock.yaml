@@ -71,6 +71,9 @@ importers:
       rimraf:
         specifier: 4.4.1
         version: 4.4.1
+      rollup:
+        specifier: ^3.30.0
+        version: 3.30.0
       tsx:
         specifier: ^4.21.0
         version: 4.23.1
@@ -2055,6 +2058,11 @@ packages:
   rimraf@4.4.1:
     resolution: {integrity: sha1-vTM2T2cCHFt56T1/T6BWjHwht1U=}
     engines: {node: '>=14'}
+    hasBin: true
+
+  rollup@3.30.0:
+    resolution: {integrity: sha512-kQvGasUgN+AlWGliFn2POSajRQEsULVYFGTvOZmK06d7vCD+YhZztt70kGk3qaeAXeWYL5eO7zx+rAubBc55eA==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
 
   run-parallel@1.2.0:
@@ -4747,6 +4755,10 @@ snapshots:
   rimraf@4.4.1:
     dependencies:
       glob: 9.3.5
+
+  rollup@3.30.0:
+    optionalDependencies:
+      fsevents: 2.3.3
 
   run-parallel@1.2.0:
     dependencies:
