@@ -55,9 +55,6 @@ Closes #ISSUE-TO-CLOSE
 - [ ] **Medium** [2, 1[^2]]: Large modifications, new features; affects several areas.
 - [ ] **High** [2]: Breaking, security, API, or critical-impact changes.
 
-[^1]: Members of the [DrawingProduction team](https://github.com/orgs/iTwin/teams/drawingproduction) can bypass requirements to merge without review, otherwise at least one approval is required.
-[^2]: If you check that areas of change are fully covered by automated tests.
-
 ### Stability Confidence
 <!-- Optional (may reduce required reviewer count) -->
 - [ ] Affected areas are sufficiently covered by automated tests | have a high confidence in stability otherwise.
