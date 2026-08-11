@@ -13,13 +13,6 @@ name: Security Audit — Auto-Fix via sec-pr-builder
 #   workflow_dispatch — manual on-demand run with configurable severity.
 
 on:
-  push:
-    branches:
-      - main
-      - "release/**"
-    paths:
-      - "**/package.json"
-      - "pnpm-lock.yaml"
   repository_dispatch:
     types:
       - dependabot-alert
