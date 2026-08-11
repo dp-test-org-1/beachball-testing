@@ -150,7 +150,7 @@ jobs:
               dependencies via pnpm.overrides in the root package.json. \
               Verify all workspace package builds succeed and run the test app build \
               and tests. Open a structured PR following .github/pull_request_template.md, \
-              create a GitHub issue for the audit failures, and link the issue to the PR." \
+              create a GitHub issue for the audit failures, and link the issue to the PR. Use 🤖🔒 emoji in PR title." \
             --allow-tool='shell(pnpm:*)' \
             --allow-tool='shell(git:*)' \
             --allow-tool='shell(gh:*)' \
