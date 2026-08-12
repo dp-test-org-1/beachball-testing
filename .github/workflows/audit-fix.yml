@@ -169,8 +169,10 @@ jobs:
               There are $VULN_COUNT open vulnerabilities detected by pnpm audit. \
               Remediate direct dependencies using pnpm update and transitive \
               dependencies via pnpm.overrides in the root package.json. \
-              Verify all workspace package builds succeed and run the test app build \
-              and tests. If it has any build or test failure then try to fix it for 3 times. If it still fails, \
+              After lockfile sync, run `pnpm build`, `pnpm test`, and all workspace scripts \ 
+              (beachball, eslint, prettier) to verify functionality. \
+              Verify all workspace builds and tests if possible then fix any issues. \
+              If it has any build or test failure then try to fix it for 3 times. If it still fails, \
               open a structured PR following .github/pull_request_template.md, \
               create a GitHub issue for the audit failures, and link the issue to the PR. Use 🤖🔒 emoji in PR title." \
             --allow-tool='shell(pnpm:*)' \
