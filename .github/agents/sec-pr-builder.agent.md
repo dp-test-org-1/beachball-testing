@@ -44,5 +44,6 @@ Before making any changes, you must determine the target base branch by checking
 * Commit the changes: `git commit -m "fix(security): resolve npm audit vulnerabilities [skip ci]"`
 * Read the PR template from `.github/pull_request_template.md` via #tool:read to extract the structure and low-level category.
 * If audit failures exist, create a new GitHub issue via `gh issue create --title "🔒 Security Audit Failure Report" --body "<audit-failure-details>"` using #tool:execute and capture the issue URL.
-* Open the PR targeting the base branch determined in Step 1 using the template structure: `gh pr create --base <main-or-release/current> --title "🔒 Security: Fix vulnerabilities" --body "<description-from-template>"` via #tool:execute.
+* Open the PR targeting the base branch determined in Step 1 using the template structure: `gh pr create --base <main-or-release/current> --title "🤖🔒 Security: Fix vulnerabilities" --body "<description-from-template>"` via #tool:execute.
 * Link the audit failure issue to the PR (if created) via `gh pr edit <pr-number> --add-label security --body "<description-with-issue-link>"` using #tool:execute.
+* Use 🤖🔒 emoji in PR title.
