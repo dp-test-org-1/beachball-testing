@@ -28,7 +28,7 @@ Before making any changes, you must determine the target base branch by checking
 
 ## 3. Targeted Remediation
 * **For Direct Dependencies:** Update the specific vulnerable package by running `pnpm update <vulnerable-package>@<secure-version> --filter <workspace-name>` using #tool:execute.
-* **For Transitive Dependencies:** If nested, inject a global override in the root `package.json` under the "pnpm.overrides" block using #tool:edit. **CRITICAL:** Do NOT club overrides of different versions of the same package. Each package version must have its own separate override entry (e.g., `"package-name@<1.0.0": "^1.0.5"` and `"package-name@<2.0.0": "^2.0.3"` as distinct entries).
+* **For Transitive Dependencies:** If nested, inject a global override in the root `package.json` under the "pnpm.overrides" block using #tool:edit. **CRITICAL:** Do NOT club overrides of different versions of the same package. Each package version must have its own separate override entry (e.g., `"package-name@<1.0.0": "^1.0.5"` and `"package-name@<2.0.0": "^2.0.3"` as distinct entries for every major version bump change) and also Use caret (^) version ranges for overrides to allow compatible minor and patch updates (e.g., `"package-name@<1.0.0": "^1.0.5"` and `"package-name@<2.0.0": "^2.0.3"`). Do NOT use exact versions; always use ^ ranges to enable automatic security patches. 
 * **Lockfile sync:** Run `pnpm install` via #tool:execute to regenerate the `pnpm-lock.yaml`.
 * **Script Validation:** After lockfile sync, run `pnpm build`, `pnpm test`, and all workspace scripts (beachball, eslint, prettier) to verify functionality.
 
