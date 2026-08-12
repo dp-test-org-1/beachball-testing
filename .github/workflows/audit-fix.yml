@@ -173,7 +173,7 @@ jobs:
               (beachball, eslint, prettier) to verify functionality. \
               Verify all workspace builds and tests if possible then fix any issues. \
               If it has any build or test failure then try to fix it for 3 times. If it still fails, \
-              open a structured PR following .github/pull_request_template.md, \
+              open a structured PR using .github/pull_request_template.md, just check low category in category section. \
               create a GitHub issue for the audit failures, and link the issue to the PR. Use 🤖🔒 emoji in PR title." \
             --allow-tool='shell(pnpm:*)' \
             --allow-tool='shell(git:*)' \
