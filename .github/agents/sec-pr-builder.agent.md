@@ -20,7 +20,7 @@ Before making any changes, you must determine the target base branch by checking
 * **If the current day is the 15th or later:**
   * Target Base Branch: `release/current`
   * Action: Run `git fetch && git checkout release/current && git pull` then `git checkout -b <new-security-branch>`
-* **Branch Naming Convention:** Use the format `sec-fix/<YYYY-MM-DD>-<severity-level>` (e.g., `sec-fix/2024-06-15-critical`).
+* **Branch Naming Convention:** Use the format `sec-fix/<YYYY-MM-DD>-<severity-level>-<build-id>` (e.g., `sec-fix/2024-06-15-critical-1`).
 
 ## 2. pnpm Workspace Audit & Classification
 * Run `pnpm audit` via #tool:execute at the monorepo root.
