@@ -17,7 +17,14 @@
   },
   "pnpm": {
     "overrides": {
-      "react": "catalog:react"
+      "react": "catalog:react",
+      "@babel/runtime": "7.29.7",
+      "brace-expansion": "2.1.4",
+      "minimatch": "9.0.9",
+      "flatted": "3.4.4",
+      "picomatch": "2.3.2",
+      "lodash": "4.18.1",
+      "nanoid": "3.3.18"
     }
   },
   "os": [
