@@ -36,6 +36,8 @@ Before making any changes, you must determine the target base branch by checking
 * **Retry Mechanism:** If any build or test fails, attempt remediation up to 3 times. If it still fails, proceed to Step 6 to open a structured PR with the failure details.
 * **Rollback mechanism:** If any build step fails, rollback changes (`git checkout package.json pnpm-lock.yaml`), report the failure log, and halt execution.
 * **Verify the overrides:** Ensure that the `pnpm.overrides` block in the root `package.json` contains the correct versions for the transitive dependencies. it should not break current workflow or any scripts. If it does, then do not club the overrides of separate versions of the same package. Instead, create separate overrides for each version. only if there are failures.
+* **Test scripts:** Ensure that commands related to beachball, eslint, prettier, and other scripts are still functional after the overrides. If any script fails, identify that package and create a separate override for that specific version of the package. Do not club overrides of different versions of the same package.
+
 
 ## 5. Versioning
 * If changes compile successfully, bump the version of the affected internal packages using the workspace’s standard versioning tool (e.g., changesets, or `pnpm exec npm version patch`).

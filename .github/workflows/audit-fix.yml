@@ -183,5 +183,8 @@ jobs:
             --allow-tool='shell(npm:*)' \
             --allow-tool='shell(jq:*)' \
             --allow-tool='shell(python3:*)' \
+            --allow-tool='shell(beachball:*)' \
+            --allow-tool='shell(eslint:*)' \
+            --allow-tool='shell(prettier:*)' \
             --allow-tool=write \
             --no-ask-user
