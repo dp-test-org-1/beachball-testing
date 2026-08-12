@@ -31,7 +31,6 @@ Before making any changes, you must determine the target base branch by checking
 * **Lockfile sync:** Run `pnpm install` via #tool:execute to regenerate the `pnpm-lock.yaml`.
 
 ## 4. Verify, Build & Test
-* **Compile all internal packages:** Run `pnpm --filter "./packages/**" build` using #tool:execute.
 * **Verify the Full build:** Run `pnpm build` and `pnpm test` using #tool:execute.
 * **Retry Mechanism:** If any build or test fails, attempt remediation up to 3 times. If it still fails, proceed to Step 6 to open a structured PR with the failure details.
 * **Rollback mechanism:** If any build step fails, rollback changes (`git checkout package.json pnpm-lock.yaml`), report the failure log, and halt execution.
