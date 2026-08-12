@@ -40,6 +40,7 @@ Before making any changes, you must determine the target base branch by checking
 
 ## 6. Open Structured PR
 * Use #tool:execute to stage the modified `package.json` files and the `pnpm-lock.yaml`.
+* If there is any fix for build or test failures, stage the changes using #tool:execute.
 * Commit the changes: `git commit -m "fix(security): resolve npm audit vulnerabilities [skip ci]"`
 * Read the PR template from `.github/pull_request_template.md` via #tool:read to extract the structure and low-level category.
 * If audit failures exist, create a new GitHub issue via `gh issue create --title "🔒 Security Audit Failure Report" --body "<audit-failure-details>"` using #tool:execute and capture the issue URL.
