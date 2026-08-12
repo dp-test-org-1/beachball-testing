@@ -32,6 +32,7 @@ Before making any changes, you must determine the target base branch by checking
 * **Lockfile sync:** Run `pnpm install` via #tool:execute to regenerate the `pnpm-lock.yaml`.
 * **Script Validation:** After lockfile sync, run `pnpm build`, `pnpm test`, and all workspace scripts (beachball, eslint, prettier) to verify functionality.
 
+
 ## 4. Verify, Build & Test
 * **Verify the Full build:** Run `pnpm build`, `pnpm test`, `pnpm run beachball`, `pnpm run eslint`, and `pnpm run prettier` using #tool:execute to ensure all scripts remain functional.
 * **Per-Package Override Remediation:** If any script fails, identify the specific package causing the failure. Create a dedicated override entry for that package's version in "pnpm.overrides" (isolated from other package overrides). Re-run `pnpm install` and re-test all scripts.
@@ -43,6 +44,7 @@ Before making any changes, you must determine the target base branch by checking
 
 ## 6. Open Structured PR
 * Use #tool:execute to stage the modified `package.json` files and the `pnpm-lock.yaml`.
+* Do NOT stage the audit report file (e.g., `audit.json` or similar).
 * If there is any fix for build or test failures, stage the changes using #tool:execute.
 * Commit the changes: `git commit -m "fix(security): resolve npm audit vulnerabilities [skip ci]"`
 * Read the PR template from `.github/pull_request_template.md` via #tool:read to extract the structure and low-level category.
