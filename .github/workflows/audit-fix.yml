@@ -70,7 +70,14 @@ jobs:
         id: audit
         shell: bash
         run: |
-          SEVERITY="${{ github.event.inputs.severity || 'high' }}"
+          INPUT_SEVERITY="${{ github.event.inputs.severity }}"
+          if [ -z "$INPUT_SEVERITY" ]; then
+            SEVERITY="high"
+            CHECK_BOTH="true"
+          else
+            SEVERITY="$INPUT_SEVERITY"
+            CHECK_BOTH="false"
+          fi
           echo "severity=$SEVERITY" >> "$GITHUB_OUTPUT"
 
           set +e
@@ -81,10 +88,16 @@ jobs:
           vuln_count=$(node -e "
             const r = JSON.parse(require('fs').readFileSync('audit-report.json', 'utf8'));
             const order = {info:0,low:1,moderate:2,high:3,critical:4};
-            const min = order['$SEVERITY'] ?? 3;
+            const checkBoth = '$CHECK_BOTH' === 'true';
             let total = 0;
             for (const [k, n] of Object.entries(r.metadata?.vulnerabilities ?? {})) {
-              if ((order[k] ?? -1) >= min) total += n;
+              const severity = order[k] ?? -1;
+              if (checkBoth) {
+                if (k === 'high' || k === 'critical') total += n;
+              } else {
+                const min = order['$SEVERITY'] ?? 3;
+                if (severity >= min) total += n;
+              }
             }
             console.log(total);
           ")
@@ -92,10 +105,18 @@ jobs:
 
           if [ "$AUDIT_EXIT" -ne 0 ] || [ "$vuln_count" -gt 0 ]; then
             echo "failed=true" >> "$GITHUB_OUTPUT"
-            echo "::warning::Found $vuln_count vulnerabilities at severity >= $SEVERITY — invoking sec-pr-builder"
+            if [ "$CHECK_BOTH" = "true" ]; then
+              echo "::warning::Found $vuln_count vulnerabilities at severity >= high — invoking sec-pr-builder"
+            else
+              echo "::warning::Found $vuln_count vulnerabilities at severity >= $SEVERITY — invoking sec-pr-builder"
+            fi
           else
             echo "failed=false" >> "$GITHUB_OUTPUT"
-            echo "Audit clean — no vulnerabilities at severity >= $SEVERITY"
+            if [ "$CHECK_BOTH" = "true" ]; then
+              echo "Audit clean — no vulnerabilities at severity >= high"
+            else
+              echo "Audit clean — no vulnerabilities at severity >= $SEVERITY"
+            fi
           fi
 
   # ─── Job 2: Remediation via sec-pr-builder ────────────────────────────────

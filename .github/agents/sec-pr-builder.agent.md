@@ -1,7 +1,7 @@
 ---
 name: sec-pr-builder
 description: Automates pnpm monorepo security by auditing dependencies, remediating direct and transitive CVEs, verifying workspace builds, and auto-raising structured Pull Requests.
-argument-hint: <severity-level> [workspace-filter] (e.g., "Fix all critical vulnerabilities" or "Audit and fix high severity in @packages/ui")".
+argument-hint: <severity-level> [workspace-filter] (e.g., "Fix all critical vulnerabilities" or "Audit and fix high severity")".
 tools: [execute, read, edit, search]     # Standard tool alias to run terminal commands (pnpm, git, gh cli)
 
 ---
@@ -20,6 +20,7 @@ Before making any changes, you must determine the target base branch by checking
 * **If the current day is the 15th or later:**
   * Target Base Branch: `release/current`
   * Action: Run `git fetch && git checkout release/current && git pull` then `git checkout -b <new-security-branch>`
+* **Branch Naming Convention:** Use the format `sec-fix/<YYYY-MM-DD>-<severity-level>` (e.g., `sec-fix/2024-06-15-critical`).
 
 ## 2. pnpm Workspace Audit & Classification
 * Run `pnpm audit` via #tool:execute at the monorepo root.
