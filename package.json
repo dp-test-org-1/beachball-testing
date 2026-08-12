@@ -25,7 +25,8 @@
       "picomatch": "2.3.2",
       "lodash": "4.18.1",
       "nanoid": "3.3.18",
-      "uglify-js": "2.6.0"
+      "uglify-js": "2.6.0",
+      "js-yaml": "^5.2.3"
     }
   },
   "os": [
