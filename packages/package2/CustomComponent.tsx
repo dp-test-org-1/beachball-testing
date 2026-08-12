@@ -3,6 +3,8 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import React from 'react';
+
 const CustomComponent = ({ prop1: prop1 = "Hello" }) => {
   return (
     <div>

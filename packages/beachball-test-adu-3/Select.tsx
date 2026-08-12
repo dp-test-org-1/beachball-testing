@@ -3,6 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
+import React from 'react';
 import CustomComponent from "@adu21/beachball-test-adu-2/CustomComponent";
 
 const CustomSelect2 = ({ prop1: prop3 = "Hello" }) => {
