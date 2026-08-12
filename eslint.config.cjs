@@ -3,19 +3,16 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import iTwinPlugin from "@itwin/eslint-plugin";
-import prettierConfig from "eslint-config-prettier";
-import jsdoc from "eslint-plugin-jsdoc";
-import react from "eslint-plugin-react";
-import header from "eslint-plugin-header";
-import eslintPluginSimpleImport from "eslint-plugin-simple-import-sort";
-import filenameRules from "eslint-plugin-filename-rules";
-import eslintPluginJest from "eslint-plugin-jest";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const fs = require("fs");
+const path = require("path");
+const iTwinPlugin = require("@itwin/eslint-plugin");
+const prettierConfig = require("eslint-config-prettier");
+const jsdoc = require("eslint-plugin-jsdoc");
+const react = require("eslint-plugin-react");
+const header = require("eslint-plugin-header");
+const eslintPluginSimpleImport = require("eslint-plugin-simple-import-sort");
+const filenameRules = require("eslint-plugin-filename-rules");
+const eslintPluginJest = require("eslint-plugin-jest");
 
 const copyrightHeader = [
   `---------------------------------------------------------------------------------------------`,
@@ -25,7 +22,7 @@ const copyrightHeader = [
 ];
 const customLanguageOptions = {
   sourceType: "module",
-  parser: (await import("@typescript-eslint/parser")).default,
+  parser: require("@typescript-eslint/parser"),
   parserOptions: {
     ecmaVersion: "2020",
     tsconfigRootDir: __dirname,
@@ -34,7 +31,7 @@ const customLanguageOptions = {
   }
 };
 
-export default [
+module.exports = [
   {
     ignores: [...fs.readFileSync(path.join(__dirname, ".prettierignore"), "utf8").split("\n"), "**/*.d.ts"]
   },

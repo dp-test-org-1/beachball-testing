@@ -3,9 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import path from "path";
-
-export default {
+module.exports = {
   access: "public",
   tag: "latest",
   scope: ["packages/beachball-test-adu", "packages/package2"],
@@ -37,12 +35,12 @@ export default {
   generateChangelog: true,
   verbose: true,
   hooks: {
-    prepublish: async (_, name, version) => {
+    prepublish: (_, name, version) => {
       // beachball doesn't support pnpm catalog dependencies, so we do it here
       console.log(`Replacing catalog and workspace dependencies for ${name}@${version}`);
-      const { spawnSync } = await import("child_process");
-      const path = (await import('path')).default;
-      const scriptPath = path.join(process.cwd(), "scripts", "replaceCatalogDeps.js");
+      const { spawnSync } = require("child_process");
+      const path = require("path");
+      const scriptPath = path.join(__dirname, "scripts", "replaceCatalogDeps.js");
       const result = spawnSync("node", [scriptPath, name], { stdio: "inherit" });
       if (result.error) throw result.error;
     }

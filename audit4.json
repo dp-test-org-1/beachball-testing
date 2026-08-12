@@ -1,0 +1,326 @@
+{
+  "actions": [
+    {
+      "action": "review",
+      "module": "timespan",
+      "resolves": [
+        {
+          "id": 1093858,
+          "path": "packages__beachball-test-adu>build>timespan",
+          "dev": false,
+          "bundled": false,
+          "optional": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "@eslint/plugin-kit",
+      "resolves": [
+        {
+          "id": 1106734,
+          "path": "apps__my-test-app>eslint>@eslint/plugin-kit",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "ajv",
+      "resolves": [
+        {
+          "id": 1113714,
+          "path": ".>eslint>ajv",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "turbo",
+      "resolves": [
+        {
+          "id": 1119389,
+          "path": ".>turbo",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1121861,
+          "path": ".>turbo",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "action": "review",
+      "module": "uuid",
+      "resolves": [
+        {
+          "id": 1119441,
+          "path": ".>beachball>uuid",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "1093858": {
+      "findings": [
+        {
+          "version": "2.3.0",
+          "paths": [
+            "packages__beachball-test-adu>build>timespan"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2017-16115\n- https://github.com/indexzero/TimeSpan.js/issues/10\n- https://github.com/advisories/GHSA-f523-2f5j-gfcg\n- https://www.npmjs.com/advisories/533",
+      "created": "2018-08-29T23:04:14.000Z",
+      "id": 1093858,
+      "npm_advisory_id": null,
+      "overview": "Affected versions of `timespan` are vulnerable to a regular expression denial of service when parsing dates.\n\nThe amplification for this vulnerability is significant, with 50,000 characters resulting in the event loop being blocked for around 10 seconds.\n\n\n## Recommendation\n\nNo direct patch is available for this vulnerability.\n\nCurrently, the best available solution is to use a functionally equivalent alternative package.\n\nIt is also sufficient to ensure that user input is not being passed into `timespan`, or that the maximum length of such user input is drastically reduced. Limiting the input length to 150 characters should be sufficient in most cases.",
+      "reported_by": null,
+      "title": "Regular Expression Denial of Service in timespan",
+      "metadata": null,
+      "cves": [
+        "CVE-2017-16115"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "timespan",
+      "vulnerable_versions": "<=2.3.0",
+      "github_advisory_id": "GHSA-f523-2f5j-gfcg",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2023-09-13T19:38:20.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-400"
+      ],
+      "url": "https://github.com/advisories/GHSA-f523-2f5j-gfcg"
+    },
+    "1106734": {
+      "findings": [
+        {
+          "version": "0.2.5",
+          "paths": [
+            "apps__my-test-app>eslint>@eslint/plugin-kit"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/eslint/rewrite/security/advisories/GHSA-xffm-g5w8-qvg7\n- https://github.com/eslint/rewrite/commit/b283f64099ad6c6b5043387c091691d21b387805\n- https://github.com/advisories/GHSA-xffm-g5w8-qvg7",
+      "created": "2025-07-18T20:39:12.000Z",
+      "id": 1106734,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe `ConfigCommentParser#parseJSONLikeConfig` API is vulnerable to a Regular Expression Denial of Service (ReDoS) attack in its only argument.\n\n### Details\n\nThe regular expression at [packages/plugin-kit/src/config-comment-parser.js:158](https://github.com/eslint/rewrite/blob/bd4bf23c59f0e4886df671cdebd5abaeb1e0d916/packages/plugin-kit/src/config-comment-parser.js#L158) is vulnerable to a quadratic runtime attack because the grouped expression is not anchored. This can be solved by prepending the regular expression with `[^-a-zA-Z0-9/]`.\n\n### PoC\n\n```javascript\nconst { ConfigCommentParser } = require(\"@eslint/plugin-kit\");\n\nconst str = `${\"A\".repeat(1000000)}?: 1 B: 2`;\n\nconsole.log(\"start\")\nvar parser = new ConfigCommentParser();\nconsole.log(parser.parseJSONLikeConfig(str));\nconsole.log(\"end\")\n\n// run `npm i @eslint/plugin-kit@0.3.3` and `node attack.js`\n// then the program will stuck forever with high CPU usage\n```\n\n### Impact\n\nThis is a Regular Expression Denial of Service attack which may lead to blocking execution and high CPU usage.",
+      "reported_by": null,
+      "title": "@eslint/plugin-kit is vulnerable to Regular Expression Denial of Service attacks through ConfigCommentParser",
+      "metadata": null,
+      "cves": [],
+      "access": "public",
+      "severity": "low",
+      "module_name": "@eslint/plugin-kit",
+      "vulnerable_versions": "<0.3.4",
+      "github_advisory_id": "GHSA-xffm-g5w8-qvg7",
+      "recommendation": "Upgrade to version 0.3.4 or later",
+      "patched_versions": ">=0.3.4",
+      "updated": "2025-07-28T17:34:45.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-xffm-g5w8-qvg7"
+    },
+    "1113714": {
+      "findings": [
+        {
+          "version": "6.12.6",
+          "paths": [
+            ".>eslint>ajv"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2025-69873\n- https://github.com/EthanKim88/ethan-cve-disclosures/blob/main/CVE-2025-69873-ajv-ReDoS.md\n- https://github.com/ajv-validator/ajv/pull/2586\n- https://github.com/ajv-validator/ajv/commit/720a23fa453ffae8340e92c9b0fe886c54cfe0d5\n- https://github.com/ajv-validator/ajv/releases/tag/v8.18.0\n- https://github.com/ajv-validator/ajv/pull/2588\n- https://github.com/ajv-validator/ajv/releases/tag/v6.14.0\n- https://github.com/advisories/GHSA-2g4f-4pwh-qvx6\n- https://github.com/ajv-validator/ajv/pull/2590\n- https://github.com/github/advisory-database/pull/6991",
+      "created": "2026-02-11T21:30:39.000Z",
+      "id": 1113714,
+      "npm_advisory_id": null,
+      "overview": "ajv (Another JSON Schema Validator) through version 8.17.1 is vulnerable to Regular Expression Denial of Service (ReDoS) when the `$data` option is enabled. The pattern keyword accepts runtime data via JSON Pointer syntax (`$data` reference), which is passed directly to the JavaScript `RegExp()` constructor without validation. An attacker can inject a malicious regex pattern (e.g., `\\\"^(a|a)*$\\\"`) combined with crafted input to cause catastrophic backtracking. A 31-character payload causes approximately 44 seconds of CPU blocking, with each additional character doubling execution time. This enables complete denial of service with a single HTTP request against any API using ajv with `$data`: true for dynamic schema validation.",
+      "reported_by": null,
+      "title": "ajv has ReDoS when using `$data` option",
+      "metadata": null,
+      "cves": [
+        "CVE-2025-69873"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "ajv",
+      "vulnerable_versions": "<6.14.0",
+      "github_advisory_id": "GHSA-2g4f-4pwh-qvx6",
+      "recommendation": "Upgrade to version 6.14.0 or later",
+      "patched_versions": ">=6.14.0",
+      "updated": "2026-03-02T21:58:41.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-400",
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-2g4f-4pwh-qvx6"
+    },
+    "1119389": {
+      "findings": [
+        {
+          "version": "1.13.4",
+          "paths": [
+            ".>turbo"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/turborepo/security/advisories/GHSA-3qcw-2rhx-2726\n- https://nvd.nist.gov/vuln/detail/CVE-2026-45772\n- https://github.com/advisories/GHSA-3qcw-2rhx-2726",
+      "created": "2026-05-19T19:46:44.000Z",
+      "id": 1119389,
+      "npm_advisory_id": null,
+      "overview": "### Impact  \n\nTurborepo can be vulnerable to arbitrary code execution when run in untrusted repositories that contain malicious Yarn configuration. In affected versions, package manager detection executed `yarn --version` from the project directory, which could cause Yarn to load and execute a project-controlled `yarnPath` from `.yarnrc.yml`. An attacker who controls repository contents could cause code execution when a user or CI system runs affected `turbo`, `@turbo/codemod`, or `@turbo/workspace` conversion commands.\n\n### Fix  \n\nTurbo now avoids executing project-local Yarn during package manager detection. Yarn versions and paths are inferred from metadata such as `package.json`, parsing the value of `yarnPath` in `.yarnrc.yml` rather than executing it, and `yarn.lock`, and unrecognized Yarn lockfile formats are rejected instead of falling back to executing `yarn`.\n\n### Workarounds  \n\nIf you cannot upgrade immediately, do not run Turborepo commands in untrusted repositories. Review or remove `.yarnrc.yml` files that define `yarnPath` before running Turborepo, especially in CI or automated tooling that processes external projects.",
+      "reported_by": null,
+      "title": "Turbo: Unexpected local code execution during Yarn Berry detection",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-45772"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "turbo",
+      "vulnerable_versions": ">=1.1.0 <2.9.14",
+      "github_advisory_id": "GHSA-3qcw-2rhx-2726",
+      "recommendation": "Upgrade to version 2.9.14 or later",
+      "patched_versions": ">=2.9.14",
+      "updated": "2026-05-19T19:46:44.000Z",
+      "cvss": {
+        "score": 9.8,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      },
+      "cwe": [
+        "CWE-426"
+      ],
+      "url": "https://github.com/advisories/GHSA-3qcw-2rhx-2726"
+    },
+    "1119441": {
+      "findings": [
+        {
+          "version": "9.0.1",
+          "paths": [
+            ".>beachball>uuid"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/uuidjs/uuid/security/advisories/GHSA-w5hq-g745-h8pq\n- https://github.com/uuidjs/uuid/commit/3d2c5b0342f0fcb52a5ac681c3d47c13e7444b34\n- https://github.com/uuidjs/uuid/releases/tag/v14.0.0\n- https://nvd.nist.gov/vuln/detail/CVE-2026-41907\n- https://github.com/uuidjs/uuid/commit/32389c887c9e75f90442ee4cc95bbab0c4e8346e\n- https://github.com/uuidjs/uuid/commit/3d61d6ac1f782cf6b1dd8661c60f11722cd49a0d\n- https://github.com/uuidjs/uuid/commit/9d27ddf7046ce496ef39569ff84d948eeff9cb2a\n- https://github.com/uuidjs/uuid/releases/tag/v11.1.1\n- https://github.com/uuidjs/uuid/releases/tag/v12.0.1\n- https://github.com/uuidjs/uuid/releases/tag/v13.0.1\n- https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+      "created": "2026-04-22T20:53:24.000Z",
+      "id": 1119441,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe `v3()`, `v5()`, and `v6()` [API methods](https://github.com/uuidjs/uuid#api-summary) (not `uuid` release versions) accept external output buffers but do not reject out-of-range writes (small `buf` or large `offset`).  \nBy contrast, `v4()`, `v1()`, and `v7()` API methods explicitly throw `RangeError` on invalid bounds.\n\nThis inconsistency allows **silent partial writes** into caller-provided buffers.\n\n\n### Affected code\n\n- `src/v35.ts` (`v3()`/`v5()` path) writes `buf[offset + i]` without bounds validation.\n- `src/v6.ts` writes `buf[offset + i]` without bounds validation.\n\n### Reproducible PoC\n\n```bash\ncd /home/StrawHat/uuid\nnpm ci\nnpm run build\n\nnode --input-type=module -e \"\nimport {v4,v5,v6} from './dist-node/index.js';\nconst ns='6ba7b810-9dad-11d1-80b4-00c04fd430c8';\nfor (const [name,fn] of [\n  ['v4()',()=>v4({},new Uint8Array(8),4)],\n  ['v5()',()=>v5('x',ns,new Uint8Array(8),4)],\n  ['v6()',()=>v6({},new Uint8Array(8),4)],\n]) {\n  try { fn(); console.log(name,'NO_THROW'); }\n  catch(e){ console.log(name,'THREW',e.name); }\n}\"\n```\n\nObserved:\n\n- `v4() THREW RangeError`\n- `v5() NO_THROW`\n- `v6() NO_THROW`\n\nExample partial overwrite evidence captured during audit:\n\n```text\nsame true buf [\n  170, 170, 170, 170,\n   75, 224, 100,  63\n]\nv6 [\n  187, 187, 187, 187,\n   31,  19, 185,  64\n]\n```\n\n### Security impact\n\n- **Primary**: integrity/robustness issue (silent partial output).\n- If an application assumes full UUID writes into preallocated buffers, this can produce malformed/truncated/partially stale identifiers without error.\n- In systems where caller-controlled offsets/buffer sizes are exposed indirectly, this may become a security-relevant logic flaw.\n\n### Suggested fix\n\nAdd the same guard used by `v4()`/`v1()`/`v7()`:\n\n```ts\nif (offset < 0 || offset + 16 > buf.length) {\n  throw new RangeError(`UUID byte range ${offset}:${offset + 15} is out of buffer bounds`);\n}\n```\n\nApply to:\n\n- `src/v35.ts` (covers `v3()` and `v5()`)\n- `src/v6.ts`",
+      "reported_by": null,
+      "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-41907"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "uuid",
+      "vulnerable_versions": "<11.1.1",
+      "github_advisory_id": "GHSA-w5hq-g745-h8pq",
+      "recommendation": "Upgrade to version 11.1.1 or later",
+      "patched_versions": ">=11.1.1",
+      "updated": "2026-05-21T18:25:57.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-787",
+        "CWE-1285"
+      ],
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+    },
+    "1121861": {
+      "findings": [
+        {
+          "version": "1.13.4",
+          "paths": [
+            ".>turbo"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/vercel/turborepo/security/advisories/GHSA-hcf7-66rw-9f5r\n- https://nvd.nist.gov/vuln/detail/CVE-2026-45773\n- https://github.com/advisories/GHSA-hcf7-66rw-9f5r",
+      "created": "2026-05-19T19:49:52.000Z",
+      "id": 1121861,
+      "npm_advisory_id": null,
+      "overview": "### Impact\n\nTurborepo's self-hosted login and SSO browser flows did not validate a CSRF state value on the localhost callback. While the CLI was waiting for authentication, a malicious web page could send a request to the local callback server with an attacker-controlled token. If accepted before the legitimate callback, the CLI could complete login with the wrong credentials.\n\nThis affects users authenticating the `turbo` CLI against self-hosted remote cache/auth endpoints. Vercel-hosted login flows using device authorization are not affected.\n\n### Fix\n\nThe login and SSO redirect flows now generate a random state value, include it in the browser authentication URL, and require the same value on the localhost callback before accepting a token. Callbacks with a missing or mismatched state are rejected.\n\n### Workarounds\n\nIf you cannot upgrade immediately, avoid browser-based self-hosted `turbo login` or SSO flows on machines that may load untrusted web content during authentication. Use a pre-provisioned token or environment-based authentication instead.",
+      "reported_by": null,
+      "title": "Turbo: Login callback CSRF/session fixation",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-45773"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "turbo",
+      "vulnerable_versions": "<=2.9.13",
+      "github_advisory_id": "GHSA-hcf7-66rw-9f5r",
+      "recommendation": "Upgrade to version 2.9.14 or later",
+      "patched_versions": ">=2.9.14",
+      "updated": "2026-06-29T15:30:57.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-352"
+      ],
+      "url": "https://github.com/advisories/GHSA-hcf7-66rw-9f5r"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 2,
+      "moderate": 3,
+      "high": 1,
+      "critical": 0
+    },
+    "dependencies": 568,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 568
+  }
+}
