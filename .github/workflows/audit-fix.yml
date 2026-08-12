@@ -159,5 +159,7 @@ jobs:
             --allow-tool='shell(cat:*)' \
             --allow-tool='shell(ls:*)' \
             --allow-tool='shell(npm:*)' \
+            --allow-tool='shell(jq:*)' \
+            --allow-tool='shell(python3:*)' \
             --allow-tool=write \
             --no-ask-user
