@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "build": "^0.1.4",
     "react": "catalog:react"
   },
   "devDependencies": {
