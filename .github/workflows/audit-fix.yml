@@ -144,7 +144,7 @@ jobs:
         run: |
           copilot \
             --agent=sec-pr-builder \
-            --prompt "Fix all $SEVERITY and higher severity vulnerabilities in this pnpm monorepo. \
+            --prompt "Fix all severity vulnerabilities. \
               Use 🤖🔒 emoji in PR title." \
             --allow-tool='shell(pnpm:*)' \
             --allow-tool='shell(git:*)' \
