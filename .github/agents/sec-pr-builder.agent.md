@@ -28,16 +28,15 @@ Before making any changes, you must determine the target base branch by checking
 
 ## 3. Targeted Remediation
 * **For Direct Dependencies:** Update the specific vulnerable package by running `pnpm update <vulnerable-package>@<secure-version> --filter <workspace-name>` using #tool:execute.
-* **For Transitive Dependencies:** If nested, inject a global override in the root `package.json` under the "pnpm.overrides" block using #tool:edit.
+* **For Transitive Dependencies:** If nested, inject a global override in the root `package.json` under the "pnpm.overrides" block using #tool:edit. **CRITICAL:** Do NOT club overrides of different versions of the same package. Each package version must have its own separate override entry (e.g., `"package-name@<1.0.0": "^1.0.5"` and `"package-name@<2.0.0": "^2.0.3"` as distinct entries).
 * **Lockfile sync:** Run `pnpm install` via #tool:execute to regenerate the `pnpm-lock.yaml`.
+* **Script Validation:** After lockfile sync, run `pnpm build`, `pnpm test`, and all workspace scripts (beachball, eslint, prettier) to verify functionality.
 
 ## 4. Verify, Build & Test
-* **Verify the Full build:** Run `pnpm build` and `pnpm test` using #tool:execute.
-* **Retry Mechanism:** If any build or test fails, attempt remediation up to 3 times. If it still fails, proceed to Step 6 to open a structured PR with the failure details.
-* **Rollback mechanism:** If any build step fails, rollback changes (`git checkout package.json pnpm-lock.yaml`), report the failure log, and halt execution.
-* **Verify the overrides:** Ensure that the `pnpm.overrides` block in the root `package.json` contains the correct versions for the transitive dependencies. it should not break current workflow or any scripts. If it does, then do not club the overrides of separate versions of the same package. Instead, create separate overrides for each version. only if there are failures.
-* **Test scripts:** Ensure that commands related to beachball, eslint, prettier, and other scripts are still functional after the overrides. If any script fails, identify that package and create a separate override for that specific version of the package. Do not club overrides of different versions of the same package.
-
+* **Verify the Full build:** Run `pnpm build`, `pnpm test`, `pnpm run beachball`, `pnpm run eslint`, and `pnpm run prettier` using #tool:execute to ensure all scripts remain functional.
+* **Per-Package Override Remediation:** If any script fails, identify the specific package causing the failure. Create a dedicated override entry for that package's version in "pnpm.overrides" (isolated from other package overrides). Re-run `pnpm install` and re-test all scripts.
+* **Retry Mechanism:** If any build or test fails after override adjustments, attempt remediation up to 3 times per failing package. If it still fails, proceed to Step 6 to open a structured PR with the failure details and the specific override configurations.
+* **Rollback mechanism:** If any build step fails after all remediation attempts, rollback changes (`git checkout package.json pnpm-lock.yaml`), report the failure log with the problematic override configuration, and halt execution.
 
 ## 5. Versioning
 * If changes compile successfully, bump the version of the affected internal packages using the workspace’s standard versioning tool (e.g., changesets, or `pnpm exec npm version patch`).
