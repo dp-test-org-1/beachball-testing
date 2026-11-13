@@ -1,0 +1,54 @@
+name: beachball-testing
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, release/current*, release/prod]
+
+jobs:
+  trigger-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install pnpm
+        shell: bash
+        run: |
+          pn=$(node -p "require('./package.json').packageManager?.split('@')[1] || 'latest'")
+          corepack prepare "pnpm@$pn" --activate
+          corepack enable pnpm
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Build
+        run: pnpm build
+
