@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [main, release/current*, release/prod]
-
+  merge_group:
 jobs:
   trigger-pipeline:
     runs-on: ubuntu-latest
