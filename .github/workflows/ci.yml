@@ -1,4 +1,4 @@
-name: Drawing Production
+name: beachball-testing
 
 on:
   pull_request:
