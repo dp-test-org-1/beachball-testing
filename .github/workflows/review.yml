@@ -1,0 +1,455 @@
+name: Review checks for PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+  merge_group:
+
+concurrency:
+  group: review-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: read
+
+jobs:
+  review:
+    # Run the full checks only on PR open, PR synchronize, and PR title/body edits.
+    if: >-
+      ${{
+        github.event.action == 'opened' ||
+        github.event.action == 'synchronize' ||
+        contains(toJson(github.event.changes), '"body"') ||
+        contains(toJson(github.event.changes), '"title"')
+      }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          clean: true
+
+      - name: Determine actions to run
+        id: triggers
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const eventName = context.eventName;
+            const action = context.payload.action;
+
+            let shouldLabel = false;
+            if (eventName === 'pull_request') {
+              if (['opened','edited','synchronize'].includes(action)) {
+                shouldLabel = true;
+              }
+            }
+            core.setOutput('should-label', shouldLabel.toString());
+
+      - name: Check for change type matches with emoji in PR title
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title;
+
+            const emojiBumpsMap = {
+              '💥': 'major',
+              '✨': 'minor',
+              '🖥️': 'minor',
+              '🐛': 'patch',
+              '🔒': 'patch',
+              '🔨': 'patch',
+              '🧹': 'patch',
+              '⚡': 'patch',
+              '🚀': 'patch',
+              '🔥': 'patch',
+              '🏁': 'patch',
+              '🤖': 'none',
+              '🍒': 'none',
+              '🧪': 'none',
+              '📄': 'none',
+            };
+
+            const emojisInTitle = Object.keys(emojiBumpsMap).filter(emoji => title.includes(emoji));
+            if (emojisInTitle.length < 1) {
+              const errorMessage = 'No change type emoji found in PR title. Please include one of the following emojis to indicate the change type: 💥 (major), ✨ or 🖥️ (minor), 🐛, 🔒, 🔨, ⚡, 🚀, 🏁, or 🔥 (patch), 🍒, 🧪, or 📄 (none).';
+              console.log(`ERROR: ${errorMessage}`);
+              core.setFailed(errorMessage);
+            } else {
+              const detectedBumpType = [...new Set(emojisInTitle.map((emoji) => emojiBumpsMap[emoji]))];
+              console.log(
+                `Detected emojis in  title: ${emojisInTitle.join(", ")}. Corresponding categories: ${detectedBumpType.join(", ")}.`
+              );
+
+              // Skip for none type since those don't require version bump
+              if (detectedBumpType.includes('major') || detectedBumpType.includes('minor') || detectedBumpType.includes('patch')) {
+                // Fetch all files changed in the PR (handle pagination for PRs with many files)
+                const files = await github.paginate(github.rest.pulls.listFiles, { 
+                  ...context.repo, 
+                  pull_number: pr.number, 
+                  per_page: 100 
+                });
+              
+                // Check if there are any changes in the change folder (only added files, not deleted)
+                const changesetFiles = files.filter(f => f.filename.startsWith('change/') && f.status !== 'removed');
+                const hasChangesetChanges = changesetFiles.length > 0;
+
+                if (hasChangesetChanges) {
+                  // Read and validate changeset files
+                  console.log(`Found ${changesetFiles.length} file(s) in change folder: ${changesetFiles.map(f => f.filename).join(', \n')}`);
+                  const foundTypes = new Set();
+                  const errors = [];
+
+                  for (const file of changesetFiles) {
+                    try {
+                      // Get file content from the PR
+                      const fileContent = await github.rest.repos.getContent({
+                        ...context.repo,
+                        path: file.filename,
+                        ref: pr.head.sha
+                      });
+
+                      const content = Buffer.from(fileContent.data.content, 'base64').toString('utf-8');
+
+                      // Parse the JSON changeset file
+                      const changesetData = JSON.parse(content);
+                      const changesetType = changesetData.type?.toLowerCase();
+
+                      if (changesetType) {
+                        foundTypes.add(changesetType);
+
+                        // Check if the changeset type matches one of the expected types from PR title
+                        if (!detectedBumpType.includes(changesetType)) {
+                          errors.push(`File "${file.filename}" has type "${changesetType}" but PR title indicates: ${detectedBumpType.join(", ")}`);
+                        }
+                      } else {
+                        console.log(`Warning: No "type" field found in changeset file: ${file.filename}`);
+                        core.setFailed(`Changeset file "${file.filename}" is missing a "type" field. Each changeset file must specify a "type" that matches one of the categories indicated by the emojis in the PR title: ${detectedBumpType.join(", ")}.`);
+                      }
+                    } catch (err) {
+                      console.log(`Warning: Could not read or parse changeset file ${file.filename}: ${err.message}`);
+                      core.setFailed(`Could not read or parse changeset file "${file.filename}". Please ensure the file is a valid JSON and can be accessed. Error: ${err.message}`);
+                    }
+                  }
+
+                  // Check for mismatched types
+                  if (errors.length > 0) {
+                    console.log(`ERROR: Changeset type mismatch. ${errors.join('; ')}`);
+                    core.setFailed(`Changeset type does not match PR title emoji. ${errors.join('; ')}. Expected type should be one of these as per PR title: "${detectedBumpType.join(", ")}".`);
+                  }
+                  
+                  // With multiple emojis, any subset of the detected version-bump types is allowed, but at least one is required
+                  const expectedBumpTypes = detectedBumpType.filter(t => t !== 'none');
+                  const matchedTypes = expectedBumpTypes.filter(t => foundTypes.has(t));
+                  if (matchedTypes.length === 0) {
+                    console.log(`ERROR: No changeset file found matching any of the PR title types: ${expectedBumpTypes.join(", ")}. Found types: ${[...foundTypes].join(", ")}`);
+                    core.setFailed(`Missing changeset file. At least one changeset file must have one of the following types as per PR title: ${expectedBumpTypes.join(", ")}.`);
+                  } else {
+                    console.log(`Found changeset(s) matching PR title types: ${matchedTypes.join(", ")}. Found types: ${[...foundTypes].join(", ")}`);
+                  }
+                } else {
+                  console.log('No changes found in change folder.');
+                }
+              }
+            }
+
+      - name: Validate Single Category Selection
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = (context.payload.pull_request && context.payload.pull_request.body) || '';
+            const checks = [
+              /- \[x\] \*\*Trivial\*\*/i,
+              /- \[x\] \*\*Low\*\*/i,
+              /- \[x\] \*\*Medium\*\*/i,
+              /- \[x\] \*\*High\*\*/i,
+            ];
+            const checked = checks.filter(re => re.test(body));
+            if (checked.length === 0) {
+              console.log('ERROR: No category selected. Please select exactly one category.');
+              core.setFailed('No category selected. Please select exactly one category.');
+            } else if (checked.length > 1) {
+              console.log('ERROR: Multiple categories selected. Please select only one category.');
+              core.setFailed('Multiple categories selected. Please select only one category.');
+            }
+
+      - name: Parse Category, Apply Label If Needed
+        id: category
+        if: ${{ !failure() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = (context.payload.pull_request && context.payload.pull_request.body) || '';
+            let category = null;
+            let minApprovals = 0;
+
+            if (/- \[x\] \*\*Trivial\*\*/i.test(body)) { category = 'trivial'; minApprovals = 0; }
+            if (/- \[x\] \*\*Low\*\*/i.test(body))     { category = 'low';     minApprovals = 1; }
+            if (/- \[x\] \*\*Medium\*\*/i.test(body))  { category = 'medium';  minApprovals = 2; }
+            if (/- \[x\] \*\*High\*\*/i.test(body))    { category = 'high';    minApprovals = 2; }
+
+            const stabilityConfidenceRegex = /### Stability Confidence[\s\S]*?- \[x\]\s*Affected areas are sufficiently covered by automated tests \| have a high confidence in stability otherwise\./i;
+            const hasStabilityConfidence = stabilityConfidenceRegex.test(body);
+            if (hasStabilityConfidence && (category === 'medium' || category === 'low')) {
+              minApprovals = Math.max(0, minApprovals - 1);
+            }
+
+            if (!category) {
+              console.log('ERROR: No category selected in PR body. Please select a category checkbox in the PR template.');
+              core.setFailed('No category selected in PR body. Please select a category checkbox in the PR template.');
+              return;
+            }
+
+            const shouldLabel = "${{ steps.triggers.outputs['should-label'] }}" === 'true';
+            if (shouldLabel) {
+              const existingLabels = await github.rest.issues.listLabelsOnIssue({
+                ...context.repo,
+                issue_number: context.payload.pull_request.number,
+              });
+              const categoryLabels = ['trivial','low','medium','high'];
+              const current = existingLabels.data.find(l => categoryLabels.includes(l.name))?.name;
+              if (current !== category) {
+                for (const label of existingLabels.data) {
+                  if (categoryLabels.includes(label.name)) {
+                    await github.rest.issues.removeLabel({
+                      ...context.repo,
+                      issue_number: context.payload.pull_request.number,
+                      name: label.name,
+                    });
+                  }
+                }
+                await github.rest.issues.addLabels({
+                  ...context.repo,
+                  issue_number: context.payload.pull_request.number,
+                  labels: [category],
+                });
+              }
+            }
+
+            console.log(`Category: ${category}, Min Approvals: ${minApprovals}, Stability Confidence: ${hasStabilityConfidence}`);
+            core.setOutput('category', category);
+            core.setOutput('minApprovals', String(minApprovals));
+            core.setOutput('stabilityConfidence', String(hasStabilityConfidence));
+
+      - name: Apply labels for packages with changes
+        id: validate-packages-and-apply-label
+        if: ${{ !failure() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Fetch all files changed in the PR
+            const pr = context.payload.pull_request;
+            const files = await github.paginate(github.rest.pulls.listFiles, { 
+              ...context.repo, 
+              pull_number: pr.number, 
+              per_page: 100 
+            });
+
+            // Define the mapping of package labels to their corresponding paths in the repository
+            const packagePaths = {
+              'drawing-production-base': 'packages/drawing-production',
+              'site-design': 'packages/dp-site-design',
+              'substation-design': 'packages/dp-substation-design',
+            };
+            const packageLabels = Object.keys(packagePaths);
+
+            // Determine which packages are actually changed based on the files in the PR
+            const actualPackageChanges = new Set();
+            for (const file of files) {
+              for (const [label, path] of Object.entries(packagePaths)) {
+                if (file.filename.startsWith(path)) {
+                  actualPackageChanges.add(label);
+                }
+              }
+            }
+
+            if (actualPackageChanges.size > 0) {
+              console.log(`Actual package changes detected: ${[...actualPackageChanges].join(', ')}`);
+            } else {
+              console.log('No package changes detected in this PR.');
+            }
+
+            // Fetch existing labels on the PR to determine if we need to add or remove any package labels
+            const existingLabels = await github.rest.issues.listLabelsOnIssue({
+              ...context.repo,
+              issue_number: pr.number,
+            });
+
+            // Determine which package labels are currently applied to the PR
+            const currentLabels = existingLabels.data.filter(l => packageLabels.includes(l.name)).map(l => l.name);
+            if (currentLabels.length > 0) {
+              console.log(`Current package labels on PR: ${currentLabels.join(', ')}`);
+            } else {
+              console.log('No package labels currently applied to this PR.');
+            }
+
+            // Apply labels based on actual package changes detected in the PR
+            const shouldLabel = "${{ steps.triggers.outputs['should-label'] }}" === 'true';
+            if (shouldLabel && actualPackageChanges.size > 0) {
+              // Add labels for packages that are changed
+              const labelsToAdd = [...actualPackageChanges].filter(l => !currentLabels.includes(l));
+              if (labelsToAdd.length > 0) {
+                await github.rest.issues.addLabels({
+                  ...context.repo,
+                  issue_number: pr.number,
+                  labels: labelsToAdd,
+                });
+                console.log(`Added labels: ${labelsToAdd.join(', ')} (detected in changed files)`);
+              }
+              
+              console.log(`Applied package change labels: ${[...actualPackageChanges].join(', ')}`);
+            }
+
+            // Remove labels for packages no longer changed
+            for (const label of currentLabels) {
+              if (!actualPackageChanges.has(label)) {
+                await github.rest.issues.removeLabel({
+                  ...context.repo,
+                  issue_number: pr.number,
+                  name: label,
+                });
+                console.log(`Removed label: ${label} (no longer detected in changed files)`);
+              } else {
+                console.log(`Retained label: ${label} (still detected in changed files)`);
+              }
+            }
+
+      - name: Enforce linking issues
+        if: ${{ !failure() }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_MOVE_ISSUES }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          echo "Checking linked issues for PR #$PR_NUMBER"
+          LINKED_ISSUES=$(gh pr view "$PR_NUMBER" --json closingIssuesReferences --jq '.closingIssuesReferences | length')
+          echo "Linked issues count for PR #$PR_NUMBER: $LINKED_ISSUES"
+          if [[ "$LINKED_ISSUES" -eq 0 ]]; then
+            echo "ERROR: No linked issues found for PR #$PR_NUMBER. Please link at least one issue to this PR. If there is no issue for this then please create one and link it to this PR."
+            exit 1
+          else
+            echo "Linked issues found: $LINKED_ISSUES"
+          fi
+
+      - name: Enforce Approval Count Per Category
+        if: ${{ !failure() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const minApprovals = parseInt("${{ steps.category.outputs.minApprovals }}", 10);
+            const category = "${{ steps.category.outputs.category }}";
+            const stabilityConfidence = "${{ steps.category.outputs.stabilityConfidence }}";
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, { ...context.repo, pull_number: pr.number, per_page: 100 });
+            const latest = new Map();
+            for (const r of reviews) {
+              if (r.state === 'APPROVED') latest.set(r.user.login, r.submitted_at);
+              else if (r.state === 'CHANGES_REQUESTED') latest.delete(r.user.login);
+            }
+            latest.delete(pr.user.login);
+            console.log(`Found ${latest.size} unique approvals (excluding PR author). Required: ${minApprovals}`);
+            if (latest.size < minApprovals) {
+              console.log(`ERROR: Not enough approvals (${latest.size}) for the "${category}" category. Required: ${minApprovals}`);
+              core.setFailed(`Not enough approvals (${latest.size}) for the "${category}" category. Please obtain at least ${minApprovals} approval(s) (excluding the PR author).`);
+            }
+
+      - name: Enforce Team-Based Approval (CODEOWNERS logic)
+        if: ${{ !failure() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ORG_READ_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const org = context.repo.owner;
+            const author = pr.user.login.toLowerCase();
+
+            const minTotalApprovals = parseInt("${{ steps.category.outputs.minApprovals }}", 10);
+            const category = "${{ steps.category.outputs.category }}";
+
+            const corePackages = [
+              'apps/dp-test-app',
+              'packages/drawing-production',
+              'packages/dp-dev-tools',
+            ];
+            const domainPackages = {
+              'packages/dp-site-design': 'dp-site',
+              'packages/dp-substation-design': 'dp-substation',
+            };
+            const rootConfigPatterns = [/^[^\/]+$/, /^\.github\//];
+
+            const files = await github.paginate(github.rest.pulls.listFiles, { ...context.repo, pull_number: pr.number, per_page: 100 });
+            const affectedCore = new Set();
+            const affectedDomain = new Set();
+            let affectsRoot = false;
+            for (const f of files) {
+              const name = f.filename;
+              if (rootConfigPatterns.some(p => p.test(name))) { affectsRoot = true; continue; }
+              if (corePackages.some(p => name.startsWith(p))) {
+                for (const p of corePackages) if (name.startsWith(p)) affectedCore.add(p);
+                continue;
+              }
+              for (const [pkg, team] of Object.entries(domainPackages)) {
+                if (name.startsWith(pkg)) { affectedDomain.add(pkg); break; }
+              }
+            }
+
+            let requiredTeams = [];
+            if (affectsRoot || affectedCore.size > 0) requiredTeams = ['dp-core'];
+            else if (affectedDomain.size > 0) requiredTeams = Array.from(affectedDomain).map(p => domainPackages[p]);
+            else return; // Nothing protected
+
+            const teamMembersCache = new Map();
+            const teamsToFetch = requiredTeams.includes('dp-core') ? requiredTeams : [...requiredTeams, 'dp-core'];
+            for (const slug of teamsToFetch) {
+              try {
+                const members = await github.paginate(github.rest.teams.listMembersInOrg, { org, team_slug: slug, per_page: 100 });
+                teamMembersCache.set(slug, new Set(members.map(m => m.login.toLowerCase())));
+              } catch (err) {
+                if (err.status === 404) teamMembersCache.set(slug, new Set()); else throw err;
+              }
+            }
+
+            const authorIsDpCore = teamMembersCache.get('dp-core')?.has(author) || false;
+            const requiresTeamEnforcement = (requiredTeams.includes('dp-core') && !authorIsDpCore) || minTotalApprovals > 0;
+            if (!requiresTeamEnforcement) {
+              console.log('Skipping team enforcement: author is dp-core or approvals not required for non-core areas.');
+              return;
+            }
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, { ...context.repo, pull_number: pr.number, per_page: 100 });
+            const validTeamApprovals = new Set();
+            for (const r of reviews) {
+              const login = r.user.login.toLowerCase();
+              if (login === pr.user.login.toLowerCase()) continue;
+              if (r.state === 'APPROVED') {
+                const isDpCore = teamMembersCache.get('dp-core')?.has(login);
+                for (const team of requiredTeams) {
+                  // dp-core approval counts for all domains, while domain-team approvals count only for their own areas.
+                  if (teamMembersCache.get(team)?.has(login) || isDpCore) {
+                    const approvalSourceTeam = isDpCore ? 'dp-core' : team;
+                    validTeamApprovals.add(`${login} (${approvalSourceTeam})`);
+                    break;
+                  }
+                }
+              } else if (r.state === 'CHANGES_REQUESTED') {
+                for (const a of Array.from(validTeamApprovals)) {
+                  if (a.startsWith(login)) validTeamApprovals.delete(a);
+                }
+              }
+            }
+            console.log(`Valid team approvals: ${validTeamApprovals.size}`);
+            if (validTeamApprovals.size === 0) {
+              const teamsFormatted = requiredTeams.map(t => `@iTwin/${t}`).join(' or ');
+              console.log(`ERROR: This PR requires approval from: ${teamsFormatted}. No valid team approvals found.`);
+              core.setFailed(`This PR requires approval from a member of: ${teamsFormatted}. No valid team approvals found.`);
+            } else {
+              console.log('Team approval requirement satisfied.');
+            }
