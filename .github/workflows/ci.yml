@@ -5,17 +5,51 @@ on:
     types: [opened, synchronize, reopened]
     branches: [main, release/current*, release/prod]
   merge_group:
+
 jobs:
-  trigger-pipeline:
+  check-change-files:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-      
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Use Node.js
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: 22
+
+      - name: Install pnpm
+        shell: bash
+        run: |
+          pn=$(node -p "require('./package.json').packageManager?.split('@')[1] || 'latest'")
+          corepack prepare "pnpm@$pn" --activate
+          corepack enable pnpm
+
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install
+
+      - name: Run beachball check
+        env:
+          BASE_REF: ${{ github.event_name == 'merge_group' && github.event.merge_group.base_sha || format('origin/{0}', github.base_ref) }}
+        run: pnpm checkchange --branch="${BASE_REF}"
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 22
 
       - name: Install pnpm
         shell: bash
@@ -51,4 +85,18 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  # Summary job to use as the single required status check for branch protection / merge queue
+  ci:
+    if: always()
+    needs: [check-change-files, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs succeeded
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "One or more required checks failed"
+          exit 1
+      - name: All checks passed
+        run: echo "All required checks passed successfully"
 
