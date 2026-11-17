@@ -42,4 +42,4 @@ steps:
     displayName: "Publish package"
     env:
       ${{ if eq(parameters.dev, true) }}:
-        beachballOptions: "--config beachball.config.dev.js"
+        beachballOptions: "--config beachball.config.dev.cjs"
