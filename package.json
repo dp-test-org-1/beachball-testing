@@ -20,7 +20,8 @@
       "react": "catalog:react",
       "js-yaml": "4.1.1",
       "uglify-js": "2.6.0",
-      "minimatch": "9.0.6"
+      "minimatch@<4": "3.1.5",
+      "minimatch@>=4": "9.0.6"
     }
   },
   "os": [

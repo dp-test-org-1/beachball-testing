@@ -40,7 +40,7 @@ module.exports = {
       console.log(`Replacing catalog and workspace dependencies for ${name}@${version}`);
       const { spawnSync } = require("child_process");
       const path = require("path");
-      const scriptPath = path.join(__dirname, "scripts", "replaceCatalogDeps.js");
+      const scriptPath = path.join(__dirname, "scripts", "replaceCatalogDeps.cjs");
       const result = spawnSync("node", [scriptPath, name], { stdio: "inherit" });
       if (result.error) throw result.error;
     }

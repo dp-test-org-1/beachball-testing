@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-const base = require("./beachball.config.js");
+const base = require("./beachball.config.cjs");
 
 /** @type {import("beachball").BeachballConfig } */
 module.exports = {
