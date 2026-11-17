@@ -35,8 +35,10 @@ jobs:
 
       - name: Run beachball check
         env:
-          BASE_REF: ${{ format('origin/{0}', github.event_name == 'merge_group' && github.event.merge_group.base_ref || github.base_ref) }}
-        run: pnpm checkchange --branch="${BASE_REF}"
+          BASE_REF: ${{ github.event_name == 'merge_group' && github.event.merge_group.base_ref || github.base_ref }}
+        run: |
+          BASE_REF="${BASE_REF#refs/heads/}"
+          pnpm checkchange --branch="origin/${BASE_REF}"
 
   build:
     runs-on: ubuntu-latest
