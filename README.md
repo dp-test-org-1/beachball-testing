@@ -3,4 +3,7 @@ This repository is to do some trials on beachball.
 
 # Beachball scripts
 ## Check change files
+`beachball check`
+
+## Generate json file
 `beachball change`
